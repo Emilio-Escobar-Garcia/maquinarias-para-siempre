@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	brand: CollectionEntry<'brands'>;
+}
+
+const { brand } = Astro.props;
+---
+
+<article class="card">
+	<p class="eyebrow">Marca</p>
+	<h3><a href={`/marcas/${brand.data.slug}/`}>{brand.data.name}</a></h3>
+	<p>{brand.data.shortDescription}</p>
+</article>
+
+<style>
+	h3 a {
+		color: var(--color-text);
+		text-decoration: none;
+	}
+
+	h3 a:hover {
+		color: var(--color-primary);
+	}
+</style>

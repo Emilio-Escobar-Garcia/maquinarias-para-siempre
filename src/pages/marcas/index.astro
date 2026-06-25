@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BrandCard from '../../components/BrandCard.astro';
+
+const brands = (await getCollection('brands')).filter((brand) => !brand.data.draft);
+---
+
+<BaseLayout title="Marcas | Maquinarias para Siempre" description="Marcas incluidas en el catálogo de maquinaria forestal.">
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Catálogo</p>
+			<h1>Marcas</h1>
+			<p class="lead">Listado de marcas preparadas para crecer con el catálogo.</p>
+		</div>
+	</section>
+	<section class="section section--compact">
+		<div class="container grid grid--cards">
+			{brands.map((brand) => <BrandCard brand={brand} />)}
+		</div>
+	</section>
+</BaseLayout>

@@ -1,0 +1,61 @@
+---
+import { getWhatsAppUrl, siteConfig } from '../site.config';
+---
+
+<footer class="site-footer">
+	<div class="container footer-grid">
+		<div>
+			<h2>{siteConfig.name}</h2>
+			<p>{siteConfig.description}</p>
+			<p>{siteConfig.location} · Cobertura: {siteConfig.coverage}</p>
+		</div>
+		<div>
+			<h2>Contacto</h2>
+			<ul>
+				<li><a href={getWhatsAppUrl()}>WhatsApp: {siteConfig.phone}</a></li>
+				<li><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></li>
+				<li><a href={siteConfig.instagramUrl}>{siteConfig.instagramHandle}</a></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		padding: 36px 0;
+		background: #17251b;
+		color: #eef5ee;
+	}
+
+	.footer-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.5fr) minmax(220px, 1fr);
+		gap: 28px;
+	}
+
+	h2 {
+		margin-bottom: 10px;
+		font-size: 1rem;
+	}
+
+	p {
+		color: #d7e2d7;
+	}
+
+	ul {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		line-height: 1.9;
+	}
+
+	a {
+		color: #ffffff;
+	}
+
+	@media (max-width: 680px) {
+		.footer-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

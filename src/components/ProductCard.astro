@@ -1,0 +1,38 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	product: CollectionEntry<'products'>;
+}
+
+const { product } = Astro.props;
+---
+
+<article class="card product-card">
+	<p class="eyebrow">Producto</p>
+	<h3><a href={`/productos/${product.data.slug}/`}>{product.data.name}</a></h3>
+	<p>{product.data.shortDescription}</p>
+	{product.data.featured && <p class="tag">Destacado</p>}
+</article>
+
+<style>
+	h3 a {
+		color: var(--color-text);
+		text-decoration: none;
+	}
+
+	h3 a:hover {
+		color: var(--color-primary);
+	}
+
+	.tag {
+		display: inline-block;
+		margin: 6px 0 0;
+		padding: 4px 8px;
+		border-radius: 4px;
+		background: #e8efe8;
+		color: var(--color-primary-dark);
+		font-size: 0.85rem;
+		font-weight: 700;
+	}
+</style>

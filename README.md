@@ -1,46 +1,137 @@
-# Astro Starter Kit: Basics
+# Maquinarias para Siempre
+
+Sitio estático en Astro para un catálogo de maquinaria forestal en español.
+
+## Requisitos
+
+- Node.js compatible con `package.json`: `>=22.12.0`.
+- npm.
+
+## Instalar
 
 ```sh
-npm create astro@latest -- --template basics
+npm install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Ejecutar en desarrollo
 
-## 🚀 Project Structure
+Según las reglas del proyecto, usa el servidor en segundo plano:
 
-Inside of your Astro project, you'll see the following folders and files:
+```sh
+npm run astro -- dev --background
+```
+
+También puedes administrarlo con:
+
+```sh
+npm run astro -- dev status
+npm run astro -- dev logs
+npm run astro -- dev stop
+```
+
+## Compilar
+
+```sh
+npm run build
+```
+
+## Previsualizar la compilación
+
+```sh
+npm run preview
+```
+
+## Estructura principal
 
 ```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+src/
+  components/        Componentes reutilizables.
+  content/           Contenido de marcas, categorías y productos.
+  layouts/           Layout base del sitio.
+  pages/             Rutas estáticas y dinámicas de Astro.
+  content.config.ts  Esquemas validados de Content Collections.
+  site.config.ts     Datos generales de la empresa.
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Datos generales de la empresa
 
-## 🧞 Commands
+Edita `src/site.config.ts` para cambiar nombre, descripción, ubicación, WhatsApp, correo, Instagram, horario y avisos provisionales.
 
-All commands are run from the root of the project, from a terminal:
+## Añadir una marca
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Crea un archivo Markdown en `src/content/brands/`, por ejemplo:
 
-## 👀 Want to learn more?
+```md
+---
+name: Nombre de marca
+slug: nombre-de-marca
+shortDescription: Descripción corta validada.
+description: Descripción ampliada opcional.
+countryOfOrigin: País o región si está confirmado.
+draft: false
+seoTitle: Título SEO opcional
+seoDescription: Descripción SEO opcional
+---
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+No afirmes representaciones comerciales sin confirmación.
+
+## Añadir una categoría
+
+Crea un archivo Markdown en `src/content/categories/`, por ejemplo:
+
+```md
+---
+name: Nombre de categoría
+slug: nombre-de-categoria
+shortDescription: Descripción corta validada.
+description: Descripción ampliada opcional.
+alternativeTerms:
+  - término alternativo
+order: 2
+draft: false
+seoTitle: Título SEO opcional
+seoDescription: Descripción SEO opcional
+---
+```
+
+## Añadir un producto
+
+Crea un archivo Markdown en `src/content/products/`, por ejemplo:
+
+```md
+---
+name: Nombre del producto
+slug: nombre-del-producto
+brand: krpan
+category: winches-forestales
+shortDescription: Descripción corta validada.
+mainDescription: Descripción principal validada.
+features:
+  - Ventaja o característica validada.
+applications:
+  - Aplicación validada.
+specifications:
+  - name: Nombre del dato
+    value: Valor validado
+alternativeTerms:
+  - término alternativo
+availability: consultar
+featured: false
+draft: false
+seoTitle: Título SEO opcional
+seoDescription: Descripción SEO opcional
+---
+```
+
+Las especificaciones técnicas son variables por producto. No todos los productos deben tener los mismos campos.
+
+## Borradores
+
+Para ocultar una marca, categoría o producto de las páginas públicas, usa:
+
+```md
+draft: true
+```
+
+El contenido provisional debe indicarlo claramente en sus textos.

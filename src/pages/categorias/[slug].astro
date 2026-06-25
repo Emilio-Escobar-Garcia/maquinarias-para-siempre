@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+
+export async function getStaticPaths() {
+	const categories = (await getCollection('categories')).filter((category) => !category.data.draft);
+	return categories.map((category) => ({
+		params: { slug: category.data.slug },
+		props: { category },
+	}));
+}
+
+const { category } = Astro.props;
+const products = (await getCollection('products')).filter(
+	(product) => !product.data.draft && product.data.category.id === category.id
+);
+const title = category.data.seoTitle ?? `${category.data.name} | Maquinarias para Siempre`;
+const description = category.data.seoDescription ?? category.data.shortDescription;
+---
+
+<BaseLayout title={title} description={description}>
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Categoría</p>
+			<h1>{category.data.name}</h1>
+			<p class="lead">{category.data.shortDescription}</p>
+			{category.data.description && <p>{category.data.description}</p>}
+		</div>
+	</section>
+	<section class="section section--compact">
+		<div class="container">
+			<h2>Productos en esta categoría</h2>
+			<div class="grid grid--cards">
+				{products.map((product) => <ProductCard product={product} />)}
+			</div>
+		</div>
+	</section>
+</BaseLayout>

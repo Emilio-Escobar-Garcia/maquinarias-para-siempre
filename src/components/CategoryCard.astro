@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	category: CollectionEntry<'categories'>;
+}
+
+const { category } = Astro.props;
+---
+
+<article class="card">
+	<p class="eyebrow">Categoría</p>
+	<h3><a href={`/categorias/${category.data.slug}/`}>{category.data.name}</a></h3>
+	<p>{category.data.shortDescription}</p>
+</article>
+
+<style>
+	h3 a {
+		color: var(--color-text);
+		text-decoration: none;
+	}
+
+	h3 a:hover {
+		color: var(--color-primary);
+	}
+</style>

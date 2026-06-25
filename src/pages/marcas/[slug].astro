@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+
+export async function getStaticPaths() {
+	const brands = (await getCollection('brands')).filter((brand) => !brand.data.draft);
+	return brands.map((brand) => ({
+		params: { slug: brand.data.slug },
+		props: { brand },
+	}));
+}
+
+const { brand } = Astro.props;
+const products = (await getCollection('products')).filter(
+	(product) => !product.data.draft && product.data.brand.id === brand.id
+);
+const title = brand.data.seoTitle ?? `${brand.data.name} | Maquinarias para Siempre`;
+const description = brand.data.seoDescription ?? brand.data.shortDescription;
+---
+
+<BaseLayout title={title} description={description}>
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Marca</p>
+			<h1>{brand.data.name}</h1>
+			<p class="lead">{brand.data.shortDescription}</p>
+			{brand.data.description && <p>{brand.data.description}</p>}
+			{brand.data.officialWebsite && <p><a href={brand.data.officialWebsite}>Sitio oficial</a></p>}
+		</div>
+	</section>
+	<section class="section section--compact">
+		<div class="container">
+			<h2>Productos de esta marca</h2>
+			<div class="grid grid--cards">
+				{products.map((product) => <ProductCard product={product} />)}
+			</div>
+		</div>
+	</section>
+</BaseLayout>

@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+
+const products = (await getCollection('products')).filter((product) => !product.data.draft);
+---
+
+<BaseLayout title="Productos | Maquinarias para Siempre" description="Catálogo de maquinaria forestal disponible para consulta comercial.">
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Catálogo</p>
+			<h1>Productos</h1>
+			<p class="lead">Fichas de maquinaria forestal administradas mediante contenido estructurado.</p>
+		</div>
+	</section>
+	<section class="section section--compact">
+		<div class="container grid grid--cards">
+			{products.map((product) => <ProductCard product={product} />)}
+		</div>
+	</section>
+</BaseLayout>

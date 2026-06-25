@@ -1,11 +1,69 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import BrandCard from '../components/BrandCard.astro';
+import ContactCTA from '../components/ContactCTA.astro';
+import { siteConfig } from '../site.config';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const products = (await getCollection('products')).filter((product) => !product.data.draft);
+const featuredProducts = products.filter((product) => product.data.featured);
+const categories = (await getCollection('categories'))
+	.filter((category) => !category.data.draft)
+	.sort((a, b) => a.data.order - b.data.order);
+const brands = (await getCollection('brands')).filter((brand) => !brand.data.draft);
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout title={`${siteConfig.name} | Maquinaria forestal`} description={siteConfig.description}>
+	<section class="section hero">
+		<div class="container">
+			<p class="eyebrow">Catálogo forestal en Colombia</p>
+			<h1>{siteConfig.name}</h1>
+			<p class="lead">{siteConfig.description}</p>
+			<div class="button-row">
+				<a class="button" href="/productos/">Ver productos</a>
+				<a class="button button--secondary" href="/contacto/">Contactar</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section--compact">
+		<div class="container">
+			<p class="notice">{siteConfig.provisionalNotice}</p>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<h2>Productos destacados</h2>
+			<div class="grid grid--cards">
+				{featuredProducts.map((product) => <ProductCard product={product} />)}
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<h2>Categorías</h2>
+			<div class="grid grid--cards">
+				{categories.map((category) => <CategoryCard category={category} />)}
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<h2>Marcas</h2>
+			<div class="grid grid--cards">
+				{brands.map((brand) => <BrandCard brand={brand} />)}
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<ContactCTA />
+		</div>
+	</section>
+</BaseLayout>

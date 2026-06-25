@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactCTA from '../../components/ContactCTA.astro';
+import { siteConfig } from '../../site.config';
+---
+
+<BaseLayout title="Nosotros | Maquinarias para Siempre" description={siteConfig.description}>
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Nosotros</p>
+			<h1>{siteConfig.name}</h1>
+			<p class="lead">{siteConfig.description}</p>
+			<p>
+				Este sitio inicia como un catálogo comercial en español para organizar marcas, categorías y productos de maquinaria forestal.
+			</p>
+			<p>
+				La información comercial y técnica publicada deberá validarse antes de considerarse definitiva.
+			</p>
+		</div>
+	</section>
+	<section class="section">
+		<div class="container">
+			<ContactCTA />
+		</div>
+	</section>
+</BaseLayout>

@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getWhatsAppUrl, siteConfig } from '../../site.config';
+---
+
+<BaseLayout title="Contacto | Maquinarias para Siempre" description="Canales de contacto de Maquinarias para Siempre.">
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Contacto</p>
+			<h1>Contacto comercial</h1>
+			<p class="lead">
+				Atendemos consultas sobre maquinaria forestal en Colombia por WhatsApp y correo electrónico.
+			</p>
+			<div class="grid grid--cards">
+				<article class="card">
+					<h2>WhatsApp y celular</h2>
+					<p><a href={getWhatsAppUrl()}>{siteConfig.phone}</a></p>
+				</article>
+				<article class="card">
+					<h2>Correo electrónico</h2>
+					<p><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></p>
+				</article>
+				<article class="card">
+					<h2>Instagram</h2>
+					<p><a href={siteConfig.instagramUrl}>{siteConfig.instagramHandle}</a></p>
+				</article>
+				<article class="card">
+					<h2>Horario</h2>
+					<p>{siteConfig.businessHours}</p>
+				</article>
+			</div>
+		</div>
+	</section>
+</BaseLayout>

@@ -1,0 +1,117 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactCTA from '../../components/ContactCTA.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { siteConfig } from '../../site.config';
+
+export async function getStaticPaths() {
+	const products = (await getCollection('products')).filter((product) => !product.data.draft);
+	return products.map((product) => ({
+		params: { slug: product.data.slug },
+		props: { product },
+	}));
+}
+
+const { product } = Astro.props;
+const brand = await getEntry(product.data.brand);
+const category = await getEntry(product.data.category);
+const relatedProducts = product.data.relatedProducts
+	? await Promise.all(product.data.relatedProducts.map((related) => getEntry(related)))
+	: [];
+const visibleRelatedProducts = relatedProducts.filter((entry) => entry && !entry.data.draft);
+const title = product.data.seoTitle ?? `${product.data.name} | Maquinarias para Siempre`;
+const description = product.data.seoDescription ?? product.data.shortDescription;
+---
+
+<BaseLayout title={title} description={description}>
+	<section class="section">
+		<div class="container detail-grid">
+			<article>
+				<p class="eyebrow">Producto</p>
+				<h1>{product.data.name}</h1>
+				<p class="lead">{product.data.shortDescription}</p>
+				<p class="notice">{siteConfig.provisionalNotice}</p>
+				<h2>Descripción</h2>
+				<p>{product.data.mainDescription}</p>
+
+				{product.data.features.length > 0 && (
+					<>
+						<h2>Características y ventajas</h2>
+						<ul class="list">
+							{product.data.features.map((feature) => <li>{feature}</li>)}
+						</ul>
+					</>
+				)}
+
+				{product.data.applications && product.data.applications.length > 0 && (
+					<>
+						<h2>Aplicaciones</h2>
+						<ul class="list">
+							{product.data.applications.map((application) => <li>{application}</li>)}
+						</ul>
+					</>
+				)}
+
+				{product.data.specifications.length > 0 && (
+					<>
+						<h2>Especificaciones técnicas</h2>
+						<dl class="meta-list">
+							{product.data.specifications.map((spec) => (
+								<div>
+									<dt>{spec.name}</dt>
+									<dd>{spec.value}</dd>
+								</div>
+							))}
+						</dl>
+					</>
+				)}
+			</article>
+
+			<aside class="card">
+				<h2>Información</h2>
+				<dl class="meta-list">
+					<div>
+						<dt>Marca</dt>
+						<dd>{brand ? <a href={`/marcas/${brand.data.slug}/`}>{brand.data.name}</a> : 'Sin marca'}</dd>
+					</div>
+					<div>
+						<dt>Categoría</dt>
+						<dd>
+							{category ? <a href={`/categorias/${category.data.slug}/`}>{category.data.name}</a> : 'Sin categoría'}
+						</dd>
+					</div>
+					{product.data.availability && (
+						<div>
+							<dt>Disponibilidad</dt>
+							<dd>{product.data.availability}</dd>
+						</div>
+					)}
+					{product.data.officialSource && (
+						<div>
+							<dt>Fuente oficial</dt>
+							<dd><a href={product.data.officialSource}>Consultar fuente</a></dd>
+						</div>
+					)}
+				</dl>
+			</aside>
+		</div>
+	</section>
+
+	{visibleRelatedProducts.length > 0 && (
+		<section class="section">
+			<div class="container">
+				<h2>Productos relacionados</h2>
+				<div class="grid grid--cards">
+					{visibleRelatedProducts.map((related) => related && <ProductCard product={related} />)}
+				</div>
+			</div>
+		</section>
+	)}
+
+	<section class="section">
+		<div class="container">
+			<ContactCTA productName={product.data.name} />
+		</div>
+	</section>
+</BaseLayout>

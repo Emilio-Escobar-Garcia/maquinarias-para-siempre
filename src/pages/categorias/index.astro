@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CategoryCard from '../../components/CategoryCard.astro';
+
+const categories = (await getCollection('categories'))
+	.filter((category) => !category.data.draft)
+	.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Categorías | Maquinarias para Siempre" description="Categorías de maquinaria forestal del catálogo.">
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Catálogo</p>
+			<h1>Categorías</h1>
+			<p class="lead">Organización inicial del catálogo por tipo de maquinaria forestal.</p>
+		</div>
+	</section>
+	<section class="section section--compact">
+		<div class="container grid grid--cards">
+			{categories.map((category) => <CategoryCard category={category} />)}
+		</div>
+	</section>
+</BaseLayout>
