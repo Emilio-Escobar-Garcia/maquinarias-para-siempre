@@ -7,13 +7,24 @@ interface Props {
 
 const { product } = Astro.props;
 const isDemoProduct = product.data.slug === 'producto-demostracion';
+const firstImage = product.data.images?.[0];
+const image =
+	typeof firstImage === 'string'
+		? { src: firstImage, alt: `Imagen de ${product.data.name}` }
+		: firstImage;
 ---
 
 <article class="card product-card">
 	<a class="card-link" href={`/productos/${product.data.slug}/`} aria-label={`Ver ${product.data.name}`}>
-		<div class="visual-placeholder product-visual" aria-hidden="true">
-			{isDemoProduct && <span>Imagen del producto</span>}
-		</div>
+		{
+			image ? (
+				<img class="product-visual product-image" src={image.src} alt={image.alt} loading="lazy" />
+			) : (
+				<div class="visual-placeholder product-visual" aria-hidden="true">
+					{isDemoProduct && <span>Imagen del producto</span>}
+				</div>
+			)
+		}
 		<div class="product-body">
 			<div class="card-meta">
 				<span>Producto</span>
@@ -56,6 +67,14 @@ const isDemoProduct = product.data.slug === 'producto-demostracion';
 		min-height: 0;
 		border-width: 0 0 1px;
 		border-radius: 0;
+	}
+
+	.product-image {
+		display: block;
+		height: auto;
+		object-fit: cover;
+		border-bottom: 1px solid var(--color-border);
+		background: #ffffff;
 	}
 
 	.product-body {

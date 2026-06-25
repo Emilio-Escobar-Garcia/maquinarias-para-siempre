@@ -6,6 +6,13 @@ const seoSchema = {
 	seoDescription: z.string().optional(),
 };
 
+const sourceRecordSchema = z.object({
+	label: z.string(),
+	url: z.string().url(),
+	consultedAt: z.string(),
+	notes: z.string().optional(),
+});
+
 const brands = defineCollection({
 	loader: glob({ base: './src/content/brands', pattern: '**/*.{md,mdx}' }),
 	schema: z.object({
@@ -56,13 +63,47 @@ const products = defineCollection({
 			})
 		).default([]),
 		alternativeTerms: z.array(z.string()).default([]),
-		images: z.array(z.string()).optional(),
-		video: z.string().url().optional(),
-		documents: z.array(z.string()).optional(),
+		images: z
+			.array(
+				z.union([
+					z.string(),
+					z.object({
+						src: z.string(),
+						alt: z.string(),
+						sourceUrl: z.string().url().optional(),
+					}),
+				])
+			)
+			.optional(),
+		video: z
+			.union([
+				z.string().url(),
+				z.object({
+					url: z.string().url(),
+					label: z.string().optional(),
+				}),
+			])
+			.optional(),
+		documents: z
+			.array(
+				z.union([
+					z.string(),
+					z.object({
+						href: z.string(),
+						label: z.string(),
+						note: z.string().optional(),
+						sourceUrl: z.string().url().optional(),
+					}),
+				])
+			)
+			.optional(),
 		availability: z.enum(availabilityValues).optional(),
 		featured: z.boolean().default(false),
 		relatedProducts: z.array(reference('products')).optional(),
 		officialSource: z.string().url().optional(),
+		sourceRecords: z.array(sourceRecordSchema).optional(),
+		sourceNotes: z.array(z.string()).optional(),
+		imageNotice: z.string().optional(),
 		draft: z.boolean().default(false),
 		...seoSchema,
 	}),

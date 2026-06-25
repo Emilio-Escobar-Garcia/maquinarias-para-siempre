@@ -21,7 +21,38 @@ const relatedProducts = product.data.relatedProducts
 const visibleRelatedProducts = relatedProducts.filter((entry) => entry && !entry.data.draft);
 const title = product.data.seoTitle ?? `${product.data.name} | Maquinarias para Siempre`;
 const description = product.data.seoDescription ?? product.data.shortDescription;
-const images = product.data.images ?? [];
+const images = (product.data.images ?? []).map((image) =>
+	typeof image === 'string' ? { src: image, alt: `Imagen de ${product.data.name}` } : image
+);
+const documents = (product.data.documents ?? []).map((documentUrl) =>
+	typeof documentUrl === 'string'
+		? { href: documentUrl, label: 'Ver documento PDF' }
+		: documentUrl
+);
+const video =
+	typeof product.data.video === 'string'
+		? { url: product.data.video, label: 'Ver video' }
+		: product.data.video;
+const resources = [
+	...documents.map((document) => ({
+		type: 'document',
+		title: document.label ?? 'Catálogo oficial',
+		description: document.note,
+		href: document.href,
+		action: 'Descargar PDF',
+	})),
+	...(video
+		? [
+				{
+					type: 'video',
+					title: 'Video oficial de la serie EP/ERP',
+					description: 'Material oficial del fabricante sobre la serie EP/ERP.',
+					href: video.url,
+					action: 'Ver video',
+				},
+			]
+		: []),
+];
 const productMessage = `Hola, quiero recibir información sobre ${product.data.name}.`;
 const availabilityLabel =
 	product.data.availability === 'consultar' ? 'Consultar disponibilidad' : product.data.availability;
@@ -47,7 +78,9 @@ const availabilityLabel =
 					{
 						images.length > 0 ? (
 							<figure class="gallery-main">
-								<img src={images[0]} alt={`Imagen de ${product.data.name}`} />
+								<button type="button" class="gallery-open" data-gallery-open aria-label={`Ampliar imagen de ${product.data.name}`}>
+									<img src={images[0].src} alt={images[0].alt} data-gallery-main />
+								</button>
 							</figure>
 						) : (
 							<div class="visual-placeholder gallery-main gallery-placeholder" aria-label="Espacio para imagen del producto">
@@ -59,8 +92,16 @@ const availabilityLabel =
 						{
 							images.length > 0 ? (
 								images.map((image, index) => (
-									<button type="button" class={index === 0 ? 'is-active' : ''} aria-label={`Imagen ${index + 1} de ${product.data.name}`}>
-										<img src={image} alt="" />
+									<button
+										type="button"
+										class={index === 0 ? 'is-active' : undefined}
+										aria-label={`Ver imagen ${index + 1} de ${product.data.name}`}
+										aria-pressed={index === 0 ? 'true' : 'false'}
+										data-gallery-thumb
+										data-gallery-src={image.src}
+										data-gallery-alt={image.alt}
+									>
+										<img src={image.src} alt="" loading="lazy" />
 									</button>
 								))
 							) : (
@@ -70,9 +111,8 @@ const availabilityLabel =
 							)
 						}
 					</div>
+					{product.data.imageNotice && <p class="gallery-note">{product.data.imageNotice}</p>}
 				</section>
-
-				<p class="notice product-notice">{siteConfig.provisionalNotice}</p>
 
 				<section class="content-block">
 					<h2>Descripción y aplicaciones</h2>
@@ -114,12 +154,17 @@ const availabilityLabel =
 				}
 
 				{
-					((product.data.documents && product.data.documents.length > 0) || product.data.video) && (
+					resources.length > 0 && (
 						<section class="content-block">
-							<h2>Documentos y videos</h2>
+							<h2>Recursos del producto</h2>
 							<div class="resource-list">
-								{product.data.video && <a href={product.data.video}>Ver video</a>}
-								{product.data.documents?.map((documentUrl) => <a href={documentUrl}>Ver documento PDF</a>)}
+								{resources.map((resource) => (
+									<a href={resource.href} class="resource-item">
+										<span class="resource-item__title">{resource.title}</span>
+										{resource.description && <small>{resource.description}</small>}
+										<span class="resource-item__action">{resource.action}</span>
+									</a>
+								))}
 							</div>
 						</section>
 					)
@@ -192,6 +237,64 @@ const availabilityLabel =
 			</div>
 		</div>
 	</section>
+
+	{
+		images.length > 0 && (
+			<dialog class="gallery-dialog" data-gallery-dialog aria-label={`Imagen ampliada de ${product.data.name}`}>
+				<button type="button" class="gallery-dialog__close" data-gallery-close aria-label="Cerrar imagen ampliada">
+					×
+				</button>
+				<img src={images[0].src} alt={images[0].alt} data-gallery-dialog-image />
+			</dialog>
+		)
+	}
+
+	<script>
+		const galleries = document.querySelectorAll<HTMLElement>('.gallery');
+
+		galleries.forEach((gallery) => {
+			const mainImage = gallery.querySelector<HTMLImageElement>('[data-gallery-main]');
+			const openButton = gallery.querySelector<HTMLButtonElement>('[data-gallery-open]');
+			const thumbs = Array.from(gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-thumb]'));
+			const dialog = document.querySelector<HTMLDialogElement>('[data-gallery-dialog]');
+			const dialogImage = document.querySelector<HTMLImageElement>('[data-gallery-dialog-image]');
+			const closeButton = document.querySelector<HTMLButtonElement>('[data-gallery-close]');
+
+			if (!mainImage) return;
+
+			const setImage = (button: HTMLButtonElement) => {
+				const src = button.dataset.gallerySrc;
+				const alt = button.dataset.galleryAlt;
+				if (!src || !alt) return;
+
+				mainImage.src = src;
+				mainImage.alt = alt;
+				thumbs.forEach((thumb) => {
+					const active = thumb === button;
+					thumb.classList.toggle('is-active', active);
+					thumb.setAttribute('aria-pressed', active ? 'true' : 'false');
+				});
+			};
+
+			thumbs.forEach((button) => {
+				button.addEventListener('click', () => setImage(button));
+			});
+
+			openButton?.addEventListener('click', () => {
+				if (!dialog || !dialogImage || typeof dialog.showModal !== 'function') return;
+
+				dialogImage.src = mainImage.src;
+				dialogImage.alt = mainImage.alt;
+				dialog.showModal();
+				closeButton?.focus();
+			});
+
+			closeButton?.addEventListener('click', () => dialog?.close());
+			dialog?.addEventListener('click', (event) => {
+				if (event.target === dialog) dialog.close();
+			});
+		});
+	</script>
 </BaseLayout>
 
 <style>
@@ -255,10 +358,21 @@ const availabilityLabel =
 		overflow: hidden;
 	}
 
+	.gallery-open {
+		display: block;
+		width: 100%;
+		height: 100%;
+		min-height: inherit;
+		padding: 0;
+		border: 0;
+		background: #ffffff;
+		cursor: zoom-in;
+	}
+
 	.gallery-main img {
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
+		object-fit: contain;
 	}
 
 	.gallery-placeholder {
@@ -303,8 +417,9 @@ const availabilityLabel =
 		background: rgba(15, 47, 86, 0.18);
 	}
 
-	.product-notice {
+	.gallery-note {
 		margin: 0;
+		color: var(--color-muted);
 		font-size: 0.95rem;
 	}
 
@@ -345,21 +460,42 @@ const availabilityLabel =
 	}
 
 	.resource-list {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 10px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+		gap: 12px;
 	}
 
-	.resource-list a {
-		display: inline-flex;
-		min-height: 42px;
-		align-items: center;
-		padding: 8px 12px;
+	.resource-item {
+		display: grid;
+		gap: 8px;
+		align-content: start;
+		padding: 14px;
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-sm);
 		background: var(--color-surface-raised);
-		font-weight: 800;
 		text-decoration: none;
+	}
+
+	.resource-item__title {
+		color: var(--color-primary);
+		font-weight: 900;
+	}
+
+	.resource-item small {
+		color: var(--color-muted);
+		font-weight: 600;
+		line-height: 1.35;
+	}
+
+	.resource-item__action {
+		justify-self: start;
+		margin-top: 2px;
+		padding: 7px 10px;
+		border-radius: var(--radius-sm);
+		background: var(--color-primary);
+		color: #ffffff;
+		font-size: 0.88rem;
+		font-weight: 900;
 	}
 
 	.product-sidebar {
@@ -404,6 +540,43 @@ const availabilityLabel =
 
 	.final-product-cta p {
 		color: rgba(255, 255, 255, 0.78);
+	}
+
+	.gallery-dialog {
+		width: min(94vw, 1100px);
+		padding: 0;
+		border: 0;
+		border-radius: var(--radius-md);
+		background: #ffffff;
+		box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
+	}
+
+	.gallery-dialog::backdrop {
+		background: rgba(8, 29, 54, 0.72);
+	}
+
+	.gallery-dialog img {
+		display: block;
+		width: 100%;
+		max-height: 86vh;
+		object-fit: contain;
+	}
+
+	.gallery-dialog__close {
+		position: absolute;
+		top: 12px;
+		right: 12px;
+		display: grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border: 1px solid rgba(15, 47, 86, 0.16);
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.94);
+		color: var(--color-primary);
+		font-size: 1.7rem;
+		line-height: 1;
+		cursor: pointer;
 	}
 
 	@media (max-width: 900px) {

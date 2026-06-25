@@ -16,8 +16,8 @@ specifications:
 alternativeTerms:
   - producto demo
 availability: consultar
-featured: true
-draft: false
+featured: false
+draft: true
 seoTitle: Producto de demostración | Maquinarias para Siempre
 seoDescription: Producto de demostración para revisar la presentación de una ficha comercial.
 ---
