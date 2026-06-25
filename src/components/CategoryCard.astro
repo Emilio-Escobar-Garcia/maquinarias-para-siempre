@@ -9,18 +9,63 @@ const { category } = Astro.props;
 ---
 
 <article class="card">
-	<p class="eyebrow">Categoría</p>
-	<h3><a href={`/categorias/${category.data.slug}/`}>{category.data.name}</a></h3>
-	<p>{category.data.shortDescription}</p>
+	<a class="category-link" href={`/categorias/${category.data.slug}/`}>
+		<div class="visual-placeholder compact-visual" aria-hidden="true"></div>
+		<div>
+			<p class="eyebrow">Categoría</p>
+			<h3>{category.data.name}</h3>
+			<p>{category.data.shortDescription}</p>
+		</div>
+	</a>
 </article>
 
 <style>
-	h3 a {
-		color: var(--color-text);
+	.card {
+		padding: 0;
+		overflow: hidden;
+		transition:
+			transform 160ms ease,
+			border-color 160ms ease,
+			box-shadow 160ms ease;
+	}
+
+	.card:hover {
+		border-color: rgba(74, 163, 223, 0.55);
+		box-shadow: var(--shadow-card);
+		transform: translateY(-2px);
+	}
+
+	.category-link {
+		display: grid;
+		grid-template-columns: 96px minmax(0, 1fr);
+		gap: 18px;
+		align-items: stretch;
+		min-height: 150px;
+		padding: 18px;
+		color: inherit;
 		text-decoration: none;
 	}
 
-	h3 a:hover {
-		color: var(--color-primary);
+	.compact-visual {
+		min-height: 100%;
+	}
+
+	h3 {
+		margin-bottom: 8px;
+		color: var(--color-ink);
+	}
+
+	p:not(.eyebrow) {
+		color: var(--color-muted);
+	}
+
+	@media (max-width: 520px) {
+		.category-link {
+			grid-template-columns: 1fr;
+		}
+
+		.compact-visual {
+			min-height: 120px;
+		}
 	}
 </style>

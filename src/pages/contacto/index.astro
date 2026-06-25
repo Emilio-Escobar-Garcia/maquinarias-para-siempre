@@ -4,31 +4,148 @@ import { getWhatsAppUrl, siteConfig } from '../../site.config';
 ---
 
 <BaseLayout title="Contacto | Maquinarias para Siempre" description="Canales de contacto de Maquinarias para Siempre.">
-	<section class="section">
+	<section class="page-hero contact-hero">
 		<div class="container">
 			<p class="eyebrow">Contacto</p>
 			<h1>Contacto comercial</h1>
 			<p class="lead">
-				Atendemos consultas sobre maquinaria forestal en Colombia por WhatsApp y correo electrónico.
+				Escríbanos para consultar maquinaria, equipos o repuestos forestales en Colombia.
 			</p>
-			<div class="grid grid--cards">
-				<article class="card">
-					<h2>WhatsApp y celular</h2>
-					<p><a href={getWhatsAppUrl()}>{siteConfig.phone}</a></p>
-				</article>
-				<article class="card">
-					<h2>Correo electrónico</h2>
-					<p><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></p>
-				</article>
-				<article class="card">
-					<h2>Instagram</h2>
-					<p><a href={siteConfig.instagramUrl}>{siteConfig.instagramHandle}</a></p>
-				</article>
-				<article class="card">
-					<h2>Horario</h2>
-					<p>{siteConfig.businessHours}</p>
-				</article>
-			</div>
+		</div>
+	</section>
+	<section class="section contact-section">
+		<div class="container contact-grid">
+			<article class="card contact-card contact-card--primary">
+				<p class="eyebrow">WhatsApp</p>
+				<h2>Atención directa</h2>
+				<p>Cuéntenos qué tipo de equipo o repuesto está buscando.</p>
+				<a class="button" href={getWhatsAppUrl()}>Escribir por WhatsApp</a>
+				<p class="contact-detail">{siteConfig.phone}</p>
+			</article>
+
+			<article class="card contact-card">
+				<p class="eyebrow">Correo</p>
+				<h2>Consulta por email</h2>
+				<p>Envíenos los datos de su consulta o del equipo que necesita.</p>
+				<div class="contact-actions">
+					<a class="button button--secondary" href={`mailto:${siteConfig.email}`}>Escribir correo</a>
+					<button class="button button--secondary copy-email" type="button" data-email={siteConfig.email}>Copiar dirección</button>
+				</div>
+				<p class="contact-detail">{siteConfig.email}</p>
+				<p class="copy-status" aria-live="polite"></p>
+			</article>
+
+			<article class="card contact-card">
+				<p class="eyebrow">Instagram</p>
+				<h2>Novedades</h2>
+				<p>Conozca novedades y contenido de la empresa.</p>
+				<a class="button button--secondary" href={siteConfig.instagramUrl}>Ver Instagram</a>
+				<p class="contact-detail">{siteConfig.instagramHandle}</p>
+			</article>
+
+			<article class="card contact-card contact-card--info">
+				<p class="eyebrow">Atención</p>
+				<h2>Horario y cobertura</h2>
+				<p>{siteConfig.businessHours}</p>
+				<p class="contact-detail">{siteConfig.location} · Cobertura nacional: {siteConfig.coverage}</p>
+			</article>
 		</div>
 	</section>
 </BaseLayout>
+
+<script>
+	const copyButton = document.querySelector<HTMLButtonElement>('.copy-email');
+	const copyStatus = document.querySelector<HTMLElement>('.copy-status');
+
+	copyButton?.addEventListener('click', async () => {
+		const email = copyButton.dataset.email;
+		if (!email || !navigator.clipboard) return;
+
+		try {
+			await navigator.clipboard.writeText(email);
+			if (copyStatus) copyStatus.textContent = 'Dirección copiada.';
+		} catch {
+			if (copyStatus) copyStatus.textContent = 'No se pudo copiar automáticamente.';
+		}
+	});
+</script>
+
+<style>
+	.contact-section {
+		padding-top: 44px;
+	}
+
+	.contact-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 18px;
+	}
+
+	.contact-card {
+		display: grid;
+		gap: 12px;
+		align-content: start;
+		min-height: 250px;
+	}
+
+	.contact-card h2 {
+		margin-bottom: 0;
+	}
+
+	.contact-card p:not(.eyebrow) {
+		color: var(--color-muted);
+	}
+
+	.contact-card--primary {
+		background:
+			linear-gradient(135deg, var(--color-primary), #1e6092),
+			var(--color-primary);
+		color: #ffffff;
+	}
+
+	.contact-card--primary h2,
+	.contact-card--primary .eyebrow {
+		color: #ffffff;
+	}
+
+	.contact-card--primary p:not(.eyebrow) {
+		color: rgba(255, 255, 255, 0.82);
+	}
+
+	.contact-card--info {
+		background: var(--color-surface-raised);
+	}
+
+	.contact-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.copy-email {
+		font: inherit;
+		cursor: pointer;
+	}
+
+	.contact-detail {
+		margin-top: auto;
+		font-size: 0.95rem;
+		font-weight: 800;
+	}
+
+	.copy-status {
+		min-height: 1.5em;
+		color: var(--color-forest);
+		font-weight: 800;
+	}
+
+	@media (max-width: 760px) {
+		.contact-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.contact-card {
+			min-height: auto;
+		}
+	}
+</style>

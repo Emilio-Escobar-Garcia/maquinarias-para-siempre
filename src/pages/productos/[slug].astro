@@ -1,9 +1,8 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ContactCTA from '../../components/ContactCTA.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { siteConfig } from '../../site.config';
+import { getWhatsAppUrl, siteConfig } from '../../site.config';
 
 export async function getStaticPaths() {
 	const products = (await getCollection('products')).filter((product) => !product.data.draft);
@@ -22,96 +21,409 @@ const relatedProducts = product.data.relatedProducts
 const visibleRelatedProducts = relatedProducts.filter((entry) => entry && !entry.data.draft);
 const title = product.data.seoTitle ?? `${product.data.name} | Maquinarias para Siempre`;
 const description = product.data.seoDescription ?? product.data.shortDescription;
+const images = product.data.images ?? [];
+const productMessage = `Hola, quiero recibir información sobre ${product.data.name}.`;
+const availabilityLabel =
+	product.data.availability === 'consultar' ? 'Consultar disponibilidad' : product.data.availability;
 ---
 
 <BaseLayout title={title} description={description}>
+	<section class="product-hero">
+		<div class="container">
+			<p class="eyebrow">Producto</p>
+			<h1>{product.data.name}</h1>
+			<p class="lead">{product.data.shortDescription}</p>
+			<div class="product-tags">
+				{brand && <a href={`/marcas/${brand.data.slug}/`}>{brand.data.name}</a>}
+				{category && <a href={`/categorias/${category.data.slug}/`}>{category.data.name}</a>}
+			</div>
+		</div>
+	</section>
+
 	<section class="section">
-		<div class="container detail-grid">
-			<article>
-				<p class="eyebrow">Producto</p>
-				<h1>{product.data.name}</h1>
-				<p class="lead">{product.data.shortDescription}</p>
-				<p class="notice">{siteConfig.provisionalNotice}</p>
-				<h2>Descripción</h2>
-				<p>{product.data.mainDescription}</p>
+		<div class="container product-layout">
+			<article class="product-content">
+				<section class="gallery" aria-label={`Galería de ${product.data.name}`}>
+					{
+						images.length > 0 ? (
+							<figure class="gallery-main">
+								<img src={images[0]} alt={`Imagen de ${product.data.name}`} />
+							</figure>
+						) : (
+							<div class="visual-placeholder gallery-main gallery-placeholder" aria-label="Espacio para imagen del producto">
+								<span>Imagen del producto</span>
+							</div>
+						)
+					}
+					<div class="gallery-thumbs" aria-label="Miniaturas">
+						{
+							images.length > 0 ? (
+								images.map((image, index) => (
+									<button type="button" class={index === 0 ? 'is-active' : ''} aria-label={`Imagen ${index + 1} de ${product.data.name}`}>
+										<img src={image} alt="" />
+									</button>
+								))
+							) : (
+								<button type="button" class="is-active" aria-label="Sin imagen disponible">
+									<span></span>
+								</button>
+							)
+						}
+					</div>
+				</section>
 
-				{product.data.features.length > 0 && (
-					<>
-						<h2>Características y ventajas</h2>
-						<ul class="list">
-							{product.data.features.map((feature) => <li>{feature}</li>)}
-						</ul>
-					</>
-				)}
+				<p class="notice product-notice">{siteConfig.provisionalNotice}</p>
 
-				{product.data.applications && product.data.applications.length > 0 && (
-					<>
-						<h2>Aplicaciones</h2>
-						<ul class="list">
-							{product.data.applications.map((application) => <li>{application}</li>)}
-						</ul>
-					</>
-				)}
+				<section class="content-block">
+					<h2>Descripción y aplicaciones</h2>
+					<p>{product.data.mainDescription}</p>
+					{
+						product.data.applications && product.data.applications.length > 0 && (
+							<ul class="list">
+								{product.data.applications.map((application) => <li>{application}</li>)}
+							</ul>
+						)
+					}
+				</section>
 
-				{product.data.specifications.length > 0 && (
-					<>
-						<h2>Especificaciones técnicas</h2>
-						<dl class="meta-list">
-							{product.data.specifications.map((spec) => (
-								<div>
-									<dt>{spec.name}</dt>
-									<dd>{spec.value}</dd>
-								</div>
-							))}
-						</dl>
-					</>
-				)}
+				{
+					product.data.features.length > 0 && (
+						<section class="content-block">
+							<h2>Características principales</h2>
+							<ul class="list">
+								{product.data.features.map((feature) => <li>{feature}</li>)}
+							</ul>
+						</section>
+					)
+				}
+
+				{
+					product.data.specifications.length > 0 && (
+						<section class="content-block">
+							<h2>Especificaciones técnicas</h2>
+							<dl class="spec-table">
+								{product.data.specifications.map((spec) => (
+									<div>
+										<dt>{spec.name}</dt>
+										<dd>{spec.value}</dd>
+									</div>
+								))}
+							</dl>
+						</section>
+					)
+				}
+
+				{
+					((product.data.documents && product.data.documents.length > 0) || product.data.video) && (
+						<section class="content-block">
+							<h2>Documentos y videos</h2>
+							<div class="resource-list">
+								{product.data.video && <a href={product.data.video}>Ver video</a>}
+								{product.data.documents?.map((documentUrl) => <a href={documentUrl}>Ver documento PDF</a>)}
+							</div>
+						</section>
+					)
+				}
 			</article>
 
-			<aside class="card">
-				<h2>Información</h2>
-				<dl class="meta-list">
-					<div>
-						<dt>Marca</dt>
-						<dd>{brand ? <a href={`/marcas/${brand.data.slug}/`}>{brand.data.name}</a> : 'Sin marca'}</dd>
-					</div>
-					<div>
-						<dt>Categoría</dt>
-						<dd>
-							{category ? <a href={`/categorias/${category.data.slug}/`}>{category.data.name}</a> : 'Sin categoría'}
-						</dd>
-					</div>
-					{product.data.availability && (
+			<aside class="product-sidebar">
+				<div class="card side-card">
+					<h2>Consulta comercial</h2>
+					<dl class="meta-list">
+						{product.data.availability && (
+							<div>
+								<dt>Disponibilidad</dt>
+								<dd>{availabilityLabel}</dd>
+							</div>
+						)}
 						<div>
-							<dt>Disponibilidad</dt>
-							<dd>{product.data.availability}</dd>
+							<dt>Marca</dt>
+							<dd>{brand ? <a href={`/marcas/${brand.data.slug}/`}>{brand.data.name}</a> : 'Sin marca'}</dd>
 						</div>
-					)}
-					{product.data.officialSource && (
 						<div>
-							<dt>Fuente oficial</dt>
-							<dd><a href={product.data.officialSource}>Consultar fuente</a></dd>
+							<dt>Categoría</dt>
+							<dd>
+								{category ? <a href={`/categorias/${category.data.slug}/`}>{category.data.name}</a> : 'Sin categoría'}
+							</dd>
 						</div>
-					)}
-				</dl>
+						{product.data.officialSource && (
+							<div>
+								<dt>Fuente oficial</dt>
+								<dd><a href={product.data.officialSource}>Consultar fuente</a></dd>
+							</div>
+						)}
+					</dl>
+					<div class="side-actions">
+						<a class="button" href={getWhatsAppUrl(productMessage)}>Consultar por WhatsApp</a>
+						<a class="button button--secondary" href={`mailto:${siteConfig.email}`}>Enviar correo</a>
+					</div>
+				</div>
 			</aside>
 		</div>
 	</section>
 
-	{visibleRelatedProducts.length > 0 && (
-		<section class="section">
-			<div class="container">
-				<h2>Productos relacionados</h2>
-				<div class="grid grid--cards">
-					{visibleRelatedProducts.map((related) => related && <ProductCard product={related} />)}
+	{
+		visibleRelatedProducts.length > 0 && (
+			<section class="section section--surface">
+				<div class="container">
+					<div class="section-heading">
+						<div>
+							<p class="eyebrow">Relacionados</p>
+							<h2>Productos relacionados</h2>
+						</div>
+					</div>
+					<div class="grid grid--cards">
+						{visibleRelatedProducts.map((related) => related && <ProductCard product={related} />)}
+					</div>
 				</div>
-			</div>
-		</section>
-	)}
+			</section>
+		)
+	}
 
-	<section class="section">
+	<section class="section section--compact">
 		<div class="container">
-			<ContactCTA productName={product.data.name} />
+			<div class="final-product-cta">
+				<div>
+					<p class="eyebrow">Contacto</p>
+					<h2>¿Quiere consultar este producto?</h2>
+					<p>Comparta el nombre del equipo y el tipo de operación para recibir orientación comercial.</p>
+				</div>
+				<a class="button" href={getWhatsAppUrl(productMessage)}>Hablar por WhatsApp</a>
+			</div>
 		</div>
 	</section>
 </BaseLayout>
+
+<style>
+	.product-hero {
+		padding: 64px 0 52px;
+		background:
+			linear-gradient(135deg, var(--color-primary-dark), var(--color-primary)),
+			var(--color-primary);
+		color: #ffffff;
+	}
+
+	.product-hero h1,
+	.product-hero .eyebrow {
+		color: #ffffff;
+	}
+
+	.product-hero .lead {
+		color: rgba(255, 255, 255, 0.78);
+	}
+
+	.product-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: 22px;
+	}
+
+	.product-tags a {
+		padding: 8px 12px;
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.1);
+		color: #ffffff;
+		font-weight: 800;
+		text-decoration: none;
+	}
+
+	.product-layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.62fr);
+		gap: 28px;
+		align-items: start;
+	}
+
+	.product-content {
+		display: grid;
+		gap: 22px;
+	}
+
+	.gallery {
+		display: grid;
+		gap: 12px;
+	}
+
+	.gallery-main {
+		min-height: clamp(280px, 48vw, 520px);
+		margin: 0;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: #ffffff;
+		overflow: hidden;
+	}
+
+	.gallery-main img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.gallery-placeholder {
+		min-height: clamp(280px, 48vw, 520px);
+	}
+
+	.gallery-thumbs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.gallery-thumbs button {
+		display: grid;
+		place-items: center;
+		width: 74px;
+		height: 58px;
+		padding: 0;
+		border: 2px solid transparent;
+		border-radius: var(--radius-sm);
+		background:
+			linear-gradient(135deg, rgba(15, 47, 86, 0.08), rgba(74, 163, 223, 0.16)),
+			#ffffff;
+		cursor: pointer;
+		overflow: hidden;
+	}
+
+	.gallery-thumbs button.is-active {
+		border-color: var(--color-accent);
+	}
+
+	.gallery-thumbs img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.gallery-thumbs span {
+		width: 34px;
+		height: 22px;
+		border-radius: 4px;
+		background: rgba(15, 47, 86, 0.18);
+	}
+
+	.product-notice {
+		margin: 0;
+		font-size: 0.95rem;
+	}
+
+	.content-block {
+		padding: 26px;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: #ffffff;
+	}
+
+	.spec-table {
+		display: grid;
+		margin: 0;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		overflow: hidden;
+	}
+
+	.spec-table div {
+		display: grid;
+		grid-template-columns: minmax(130px, 0.38fr) minmax(0, 1fr);
+	}
+
+	.spec-table div + div {
+		border-top: 1px solid var(--color-border);
+	}
+
+	.spec-table dt,
+	.spec-table dd {
+		margin: 0;
+		padding: 12px 14px;
+	}
+
+	.spec-table dt {
+		background: var(--color-surface-raised);
+		color: var(--color-muted);
+		font-weight: 800;
+	}
+
+	.resource-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.resource-list a {
+		display: inline-flex;
+		min-height: 42px;
+		align-items: center;
+		padding: 8px 12px;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		background: var(--color-surface-raised);
+		font-weight: 800;
+		text-decoration: none;
+	}
+
+	.product-sidebar {
+		align-self: start;
+		position: sticky;
+		top: 92px;
+	}
+
+	.side-card {
+		padding: 20px;
+	}
+
+	.side-card h2 {
+		font-size: 1.25rem;
+	}
+
+	.side-actions {
+		display: grid;
+		gap: 10px;
+		margin-top: 18px;
+	}
+
+	.side-actions .button {
+		width: 100%;
+	}
+
+	.final-product-cta {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 18px;
+		align-items: center;
+		padding: 24px;
+		border-radius: var(--radius-md);
+		background: var(--color-primary);
+		color: #ffffff;
+	}
+
+	.final-product-cta h2,
+	.final-product-cta .eyebrow {
+		color: #ffffff;
+	}
+
+	.final-product-cta p {
+		color: rgba(255, 255, 255, 0.78);
+	}
+
+	@media (max-width: 900px) {
+		.product-layout,
+		.final-product-cta {
+			grid-template-columns: 1fr;
+		}
+
+		.product-sidebar {
+			position: static;
+		}
+	}
+
+	@media (max-width: 620px) {
+		.spec-table div {
+			grid-template-columns: 1fr;
+		}
+
+		.spec-table dd {
+			border-top: 1px solid var(--color-border);
+		}
+	}
+</style>

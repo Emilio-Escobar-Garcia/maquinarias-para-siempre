@@ -1,23 +1,23 @@
 ---
-name: Producto de demostración provisional
+name: Producto de demostración
 slug: producto-demostracion
 brand: krpan
 category: winches-forestales
-shortDescription: Ficha ficticia creada únicamente para probar la estructura del catálogo.
-mainDescription: Contenido provisional para probar la estructura del catálogo. No corresponde a una ficha comercial publicada.
+shortDescription: Ejemplo de producto para revisar la presentación de una ficha comercial.
+mainDescription: Contenido provisional. No corresponde a una ficha comercial publicada.
 features:
-  - Campo de ventaja provisional para validar el diseño de ficha.
-  - Campo de característica provisional sin valor técnico comercial.
+  - Característica de ejemplo sin valor técnico comercial.
+  - Información pendiente de confirmación antes de publicación comercial.
 applications:
-  - Aplicación provisional para probar la sección correspondiente.
+  - Aplicación de ejemplo para revisar la sección de usos.
 specifications:
-  - name: Dato técnico provisional
-    value: Sin especificación comercial publicada.
+  - name: Información técnica
+    value: Pendiente de confirmar.
 alternativeTerms:
   - producto demo
 availability: consultar
 featured: true
 draft: false
-seoTitle: Producto de demostración provisional | Maquinarias para Siempre
-seoDescription: Ficha ficticia para validar la estructura inicial del catálogo.
+seoTitle: Producto de demostración | Maquinarias para Siempre
+seoDescription: Producto de demostración para revisar la presentación de una ficha comercial.
 ---

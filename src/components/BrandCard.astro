@@ -9,18 +9,68 @@ const { brand } = Astro.props;
 ---
 
 <article class="card">
-	<p class="eyebrow">Marca</p>
-	<h3><a href={`/marcas/${brand.data.slug}/`}>{brand.data.name}</a></h3>
-	<p>{brand.data.shortDescription}</p>
+	<a class="brand-link" href={`/marcas/${brand.data.slug}/`}>
+		<div class="brand-mark" aria-hidden="true">{brand.data.name.slice(0, 2).toUpperCase()}</div>
+		<div>
+			<p class="eyebrow">Marca</p>
+			<h3>{brand.data.name}</h3>
+			<p>{brand.data.shortDescription}</p>
+		</div>
+	</a>
 </article>
 
 <style>
-	h3 a {
-		color: var(--color-text);
+	.card {
+		padding: 0;
+		transition:
+			transform 160ms ease,
+			border-color 160ms ease,
+			box-shadow 160ms ease;
+	}
+
+	.card:hover {
+		border-color: rgba(74, 163, 223, 0.55);
+		box-shadow: var(--shadow-card);
+		transform: translateY(-2px);
+	}
+
+	.brand-link {
+		display: grid;
+		grid-template-columns: 74px minmax(0, 1fr);
+		gap: 18px;
+		align-items: center;
+		min-height: 150px;
+		padding: 22px;
+		color: inherit;
 		text-decoration: none;
 	}
 
-	h3 a:hover {
-		color: var(--color-primary);
+	.brand-mark {
+		display: grid;
+		place-items: center;
+		width: 74px;
+		height: 74px;
+		border-radius: var(--radius-md);
+		background:
+			linear-gradient(135deg, rgba(15, 47, 86, 0.92), rgba(74, 163, 223, 0.8)),
+			var(--color-primary);
+		color: #ffffff;
+		font-weight: 900;
+		letter-spacing: 0.06em;
+	}
+
+	h3 {
+		margin-bottom: 8px;
+		color: var(--color-ink);
+	}
+
+	p:not(.eyebrow) {
+		color: var(--color-muted);
+	}
+
+	@media (max-width: 520px) {
+		.brand-link {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>

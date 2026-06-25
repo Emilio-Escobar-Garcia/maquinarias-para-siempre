@@ -11,7 +11,7 @@ export const siteConfig = {
 	defaultWhatsAppMessage:
 		'Hola, quiero recibir información sobre maquinaria forestal de Maquinarias para Siempre.',
 	provisionalNotice:
-		'Contenido provisional para probar la estructura del catálogo. No corresponde a una ficha comercial publicada.',
+		'Contenido provisional. No corresponde a una ficha comercial publicada.',
 } as const;
 
 export function getWhatsAppUrl(message = siteConfig.defaultWhatsAppMessage) {

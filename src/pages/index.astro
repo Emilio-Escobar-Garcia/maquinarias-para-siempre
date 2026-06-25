@@ -5,7 +5,8 @@ import ProductCard from '../components/ProductCard.astro';
 import CategoryCard from '../components/CategoryCard.astro';
 import BrandCard from '../components/BrandCard.astro';
 import ContactCTA from '../components/ContactCTA.astro';
-import { siteConfig } from '../site.config';
+import HomeScroller from '../components/HomeScroller.astro';
+import { getWhatsAppUrl, siteConfig } from '../site.config';
 
 const products = (await getCollection('products')).filter((product) => !product.data.draft);
 const featuredProducts = products.filter((product) => product.data.featured);
@@ -13,57 +14,444 @@ const categories = (await getCollection('categories'))
 	.filter((category) => !category.data.draft)
 	.sort((a, b) => a.data.order - b.data.order);
 const brands = (await getCollection('brands')).filter((brand) => !brand.data.draft);
+const homeCategories = categories.slice(0, 8);
+const homeFeaturedProducts = featuredProducts.slice(0, 8);
+const homeBrands = brands.slice(0, 8);
 ---
 
 <BaseLayout title={`${siteConfig.name} | Maquinaria forestal`} description={siteConfig.description}>
 	<section class="section hero">
+		<div class="container hero-grid">
+			<div class="hero-copy">
+				<p class="eyebrow">Maquinarias para Siempre</p>
+				<h1>Maquinaria forestal para las exigencias del campo colombiano</h1>
+				<p class="lead">
+					Equipos europeos, repuestos y acompañamiento comercial para operaciones forestales en toda Colombia.
+				</p>
+				<div class="button-row">
+					<a class="button" href="/productos/">Ver productos</a>
+					<a class="button button--dark" href={getWhatsAppUrl()}>Hablar por WhatsApp</a>
+				</div>
+			</div>
+			<div class="hero-visual" aria-hidden="true">
+				<div class="machine-card">
+					<div class="machine-cabin"></div>
+					<div class="machine-arm"></div>
+					<div class="machine-line"></div>
+					<div class="machine-base"></div>
+					<div class="machine-wheel machine-wheel--left"></div>
+					<div class="machine-wheel machine-wheel--right"></div>
+				</div>
+				<div class="visual-label visual-label--top">Catálogo técnico</div>
+				<div class="visual-label visual-label--bottom">Cobertura Colombia</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section--surface">
+		<div class="container intro-grid">
+			<div>
+				<p class="eyebrow">Empresa</p>
+				<h2>Maquinaria, equipos y repuestos para operaciones forestales</h2>
+			</div>
+			<div>
+				<p>
+					{siteConfig.name} comercializa maquinaria, equipos y repuestos para operaciones forestales en Colombia. Acompañamos a nuestros clientes en la búsqueda de soluciones acordes con el tipo de trabajo y las condiciones de cada operación.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
 		<div class="container">
-			<p class="eyebrow">Catálogo forestal en Colombia</p>
-			<h1>{siteConfig.name}</h1>
-			<p class="lead">{siteConfig.description}</p>
-			<div class="button-row">
-				<a class="button" href="/productos/">Ver productos</a>
-				<a class="button button--secondary" href="/contacto/">Contactar</a>
+			{
+				homeCategories.length > 0 ? (
+					<HomeScroller
+						eyebrow="Categorías"
+						title="Categorías de productos"
+						description="Consulte las líneas disponibles para ubicar el tipo de equipo que necesita."
+						allHref="/categorias/"
+						allLabel="Ver todas las categorías"
+					>
+						{homeCategories.map((category) => <CategoryCard category={category} />)}
+					</HomeScroller>
+				) : (
+					<p class="empty-state">Todavía no hay categorías publicadas.</p>
+				)
+			}
+		</div>
+	</section>
+
+	<section class="section section--surface">
+		<div class="container">
+			{
+				homeFeaturedProducts.length > 0 ? (
+					<HomeScroller
+						eyebrow="Destacados"
+						title="Productos destacados"
+						description="Una selección inicial de productos para iniciar consultas comerciales."
+						allHref="/productos/"
+						allLabel="Ver todos los productos"
+					>
+						{homeFeaturedProducts.map((product) => <ProductCard product={product} />)}
+					</HomeScroller>
+				) : (
+					<p class="empty-state">Todavía no hay productos destacados publicados.</p>
+				)
+			}
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			{
+				homeBrands.length > 0 ? (
+					<HomeScroller
+						eyebrow="Marcas"
+						title="Marcas en el catálogo"
+						description="Marcas disponibles dentro de nuestro catálogo comercial."
+						allHref="/marcas/"
+						allLabel="Ver todas las marcas"
+					>
+						{homeBrands.map((brand) => <BrandCard brand={brand} />)}
+					</HomeScroller>
+				) : (
+					<p class="empty-state">Todavía no hay marcas publicadas.</p>
+				)
+			}
+		</div>
+	</section>
+
+	<section class="section section--surface">
+		<div class="container">
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">Soluciones</p>
+					<h2>Soluciones y acompañamiento</h2>
+				</div>
+				<p>Atención comercial para orientar la búsqueda de equipos y repuestos según cada operación.</p>
+			</div>
+			<div class="grid reason-grid">
+				<article class="card reason-card">
+					<span aria-hidden="true">01</span>
+					<h3>Maquinaria forestal</h3>
+					<p>Equipos orientados a labores forestales y necesidades del campo colombiano.</p>
+				</article>
+				<article class="card reason-card">
+					<span aria-hidden="true">02</span>
+					<h3>Repuestos</h3>
+					<p>Canales de consulta para identificar repuestos y requerimientos asociados a los equipos.</p>
+				</article>
+				<article class="card reason-card">
+					<span aria-hidden="true">03</span>
+					<h3>Asesoría comercial</h3>
+					<p>Acompañamiento para revisar opciones según el trabajo, la operación y la disponibilidad.</p>
+				</article>
+				<article class="card reason-card">
+					<span aria-hidden="true">04</span>
+					<h3>Cobertura nacional</h3>
+					<p>Atención a consultas comerciales para distintas regiones de Colombia.</p>
+				</article>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<div class="coverage">
+				<div>
+					<p class="eyebrow">Cobertura</p>
+					<h2>Atención desde {siteConfig.location} hacia Colombia</h2>
+					<p>
+						Recibimos consultas comerciales desde Medellín y atendemos necesidades de maquinaria, equipos y repuestos en {siteConfig.coverage}.
+					</p>
+				</div>
+				<div class="coverage-map" aria-hidden="true">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
 			</div>
 		</div>
 	</section>
 
 	<section class="section section--compact">
 		<div class="container">
-			<p class="notice">{siteConfig.provisionalNotice}</p>
-		</div>
-	</section>
-
-	<section class="section">
-		<div class="container">
-			<h2>Productos destacados</h2>
-			<div class="grid grid--cards">
-				{featuredProducts.map((product) => <ProductCard product={product} />)}
-			</div>
-		</div>
-	</section>
-
-	<section class="section">
-		<div class="container">
-			<h2>Categorías</h2>
-			<div class="grid grid--cards">
-				{categories.map((category) => <CategoryCard category={category} />)}
-			</div>
-		</div>
-	</section>
-
-	<section class="section">
-		<div class="container">
-			<h2>Marcas</h2>
-			<div class="grid grid--cards">
-				{brands.map((brand) => <BrandCard brand={brand} />)}
-			</div>
-		</div>
-	</section>
-
-	<section class="section">
-		<div class="container">
 			<ContactCTA />
 		</div>
 	</section>
 </BaseLayout>
+
+<style>
+	.hero {
+		position: relative;
+		min-height: 680px;
+		display: grid;
+		align-items: center;
+		background:
+			linear-gradient(135deg, rgba(8, 29, 54, 0.98), rgba(15, 61, 99, 0.92)),
+			radial-gradient(circle at 80% 20%, rgba(74, 163, 223, 0.24), transparent 30%);
+		color: #ffffff;
+		overflow: hidden;
+	}
+
+	.hero::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+			linear-gradient(0deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+		background-size: 56px 56px;
+		mask-image: linear-gradient(90deg, black, transparent 70%);
+	}
+
+	.hero-grid {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+		gap: 44px;
+		align-items: center;
+	}
+
+	.hero-copy .lead {
+		color: rgba(255, 255, 255, 0.78);
+	}
+
+	.hero-visual {
+		position: relative;
+		min-height: 430px;
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		border-radius: 18px;
+		background:
+			linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.04)),
+			repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 16px);
+		box-shadow: 0 30px 80px rgba(0, 0, 0, 0.24);
+		overflow: hidden;
+	}
+
+	.hero-visual::before {
+		content: '';
+		position: absolute;
+		inset: 42px;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-radius: 50%;
+	}
+
+	.machine-card {
+		position: absolute;
+		left: 50%;
+		top: 52%;
+		width: min(78%, 410px);
+		height: 210px;
+		transform: translate(-50%, -50%);
+	}
+
+	.machine-cabin,
+	.machine-arm,
+	.machine-line,
+	.machine-base,
+	.machine-wheel {
+		position: absolute;
+	}
+
+	.machine-base {
+		left: 62px;
+		bottom: 50px;
+		width: 250px;
+		height: 54px;
+		border-radius: 10px 24px 12px 12px;
+		background: linear-gradient(180deg, #8ed0ff, #3c98d1);
+	}
+
+	.machine-cabin {
+		left: 92px;
+		bottom: 100px;
+		width: 86px;
+		height: 74px;
+		clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%, 0 28%);
+		background: linear-gradient(145deg, #d9f0ff, #6bbbe9);
+	}
+
+	.machine-arm {
+		left: 172px;
+		bottom: 132px;
+		width: 170px;
+		height: 14px;
+		border-radius: 999px;
+		background: #b6e0fb;
+		transform: rotate(-18deg);
+		transform-origin: left center;
+	}
+
+	.machine-line {
+		right: 34px;
+		bottom: 72px;
+		width: 2px;
+		height: 116px;
+		background: rgba(255, 255, 255, 0.7);
+	}
+
+	.machine-wheel {
+		bottom: 20px;
+		width: 78px;
+		height: 78px;
+		border: 12px solid #0b223d;
+		border-radius: 50%;
+		background: #8ed0ff;
+		box-shadow: inset 0 0 0 12px #2f6f5d;
+	}
+
+	.machine-wheel--left {
+		left: 82px;
+	}
+
+	.machine-wheel--right {
+		left: 230px;
+	}
+
+	.visual-label {
+		position: absolute;
+		padding: 10px 14px;
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		border-radius: 999px;
+		background: rgba(8, 29, 54, 0.62);
+		color: #ffffff;
+		font-weight: 800;
+	}
+
+	.visual-label--top {
+		top: 26px;
+		left: 24px;
+	}
+
+	.visual-label--bottom {
+		right: 24px;
+		bottom: 26px;
+	}
+
+	.intro-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		gap: 32px;
+		align-items: start;
+	}
+
+	.reason-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+
+	.reason-card span {
+		display: inline-grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		margin-bottom: 16px;
+		border-radius: 999px;
+		background: var(--color-primary-soft);
+		color: var(--color-primary);
+		font-weight: 900;
+	}
+
+	.reason-card p {
+		color: var(--color-muted);
+	}
+
+	.coverage {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(240px, 380px);
+		gap: 28px;
+		align-items: center;
+		padding: clamp(24px, 4vw, 36px);
+		border-radius: var(--radius-md);
+		background: var(--color-primary);
+		color: #ffffff;
+		box-shadow: var(--shadow-soft);
+		overflow: hidden;
+	}
+
+	.coverage h2,
+	.coverage .eyebrow {
+		color: #ffffff;
+	}
+
+	.coverage p {
+		color: rgba(255, 255, 255, 0.78);
+	}
+
+	.coverage-map {
+		position: relative;
+		min-height: 250px;
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		border-radius: 16px;
+		background:
+			radial-gradient(circle at 45% 45%, rgba(142, 208, 255, 0.36), transparent 8%),
+			linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)),
+			repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 16px);
+	}
+
+	.coverage-map span {
+		position: absolute;
+		border: 1px solid rgba(255, 255, 255, 0.24);
+		border-radius: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	.coverage-map span:nth-child(1) {
+		left: 50%;
+		top: 50%;
+		width: 70px;
+		height: 70px;
+	}
+
+	.coverage-map span:nth-child(2) {
+		left: 50%;
+		top: 50%;
+		width: 140px;
+		height: 140px;
+	}
+
+	.coverage-map span:nth-child(3) {
+		left: 50%;
+		top: 50%;
+		width: 210px;
+		height: 210px;
+	}
+
+	@media (max-width: 900px) {
+		.hero {
+			min-height: auto;
+			padding-top: 76px;
+		}
+
+		.hero-grid,
+		.intro-grid,
+		.coverage {
+			grid-template-columns: 1fr;
+		}
+
+		.reason-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (max-width: 560px) {
+		.reason-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.hero-visual {
+			min-height: 320px;
+		}
+
+		.machine-card {
+			width: 92%;
+			transform: translate(-50%, -50%) scale(0.78);
+		}
+
+		.visual-label {
+			font-size: 0.82rem;
+		}
+	}
+</style>

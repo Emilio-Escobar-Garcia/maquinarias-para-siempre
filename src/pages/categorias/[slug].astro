@@ -20,20 +20,43 @@ const description = category.data.seoDescription ?? category.data.shortDescripti
 ---
 
 <BaseLayout title={title} description={description}>
-	<section class="section">
+	<section class="page-hero">
 		<div class="container">
 			<p class="eyebrow">Categoría</p>
 			<h1>{category.data.name}</h1>
 			<p class="lead">{category.data.shortDescription}</p>
 			{category.data.description && <p>{category.data.description}</p>}
+			{
+				category.data.alternativeTerms.length > 0 && (
+					<ul class="pill-list">
+						{category.data.alternativeTerms.map((term) => <li>{term}</li>)}
+					</ul>
+				)
+			}
+			<div class="button-row">
+				<a class="button button--dark" href="/categorias/">Ver categorías</a>
+				<a class="button button--dark" href="/productos/">Ver productos</a>
+			</div>
 		</div>
 	</section>
-	<section class="section section--compact">
+	<section class="section">
 		<div class="container">
-			<h2>Productos en esta categoría</h2>
-			<div class="grid grid--cards">
-				{products.map((product) => <ProductCard product={product} />)}
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">Productos</p>
+					<h2>Productos en esta categoría</h2>
+				</div>
+				<p>Equipos asociados a esta categoría dentro del catálogo publicado.</p>
 			</div>
+			{
+				products.length > 0 ? (
+					<div class="grid grid--cards">
+						{products.map((product) => <ProductCard product={product} />)}
+					</div>
+				) : (
+					<p class="empty-state">Todavía no hay productos publicados en esta categoría.</p>
+				)
+			}
 		</div>
 	</section>
 </BaseLayout>

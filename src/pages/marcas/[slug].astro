@@ -20,21 +20,37 @@ const description = brand.data.seoDescription ?? brand.data.shortDescription;
 ---
 
 <BaseLayout title={title} description={description}>
-	<section class="section">
+	<section class="page-hero">
 		<div class="container">
 			<p class="eyebrow">Marca</p>
 			<h1>{brand.data.name}</h1>
 			<p class="lead">{brand.data.shortDescription}</p>
 			{brand.data.description && <p>{brand.data.description}</p>}
-			{brand.data.officialWebsite && <p><a href={brand.data.officialWebsite}>Sitio oficial</a></p>}
+			<div class="button-row">
+				<a class="button button--dark" href="/marcas/">Ver marcas</a>
+				<a class="button button--dark" href="/productos/">Ver productos</a>
+				{brand.data.officialWebsite && <a class="button button--dark" href={brand.data.officialWebsite}>Sitio oficial</a>}
+			</div>
 		</div>
 	</section>
-	<section class="section section--compact">
+	<section class="section">
 		<div class="container">
-			<h2>Productos de esta marca</h2>
-			<div class="grid grid--cards">
-				{products.map((product) => <ProductCard product={product} />)}
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">Productos</p>
+					<h2>Productos de esta marca</h2>
+				</div>
+				<p>Listado de productos asociados a esta marca dentro del catálogo publicado.</p>
 			</div>
+			{
+				products.length > 0 ? (
+					<div class="grid grid--cards">
+						{products.map((product) => <ProductCard product={product} />)}
+					</div>
+				) : (
+					<p class="empty-state">Todavía no hay productos publicados para esta marca.</p>
+				)
+			}
 		</div>
 	</section>
 </BaseLayout>

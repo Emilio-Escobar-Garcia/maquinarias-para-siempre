@@ -5,22 +5,88 @@ import { siteConfig } from '../../site.config';
 ---
 
 <BaseLayout title="Nosotros | Maquinarias para Siempre" description={siteConfig.description}>
-	<section class="section">
+	<section class="page-hero">
 		<div class="container">
 			<p class="eyebrow">Nosotros</p>
 			<h1>{siteConfig.name}</h1>
 			<p class="lead">{siteConfig.description}</p>
-			<p>
-				Este sitio inicia como un catálogo comercial en español para organizar marcas, categorías y productos de maquinaria forestal.
-			</p>
-			<p>
-				La información comercial y técnica publicada deberá validarse antes de considerarse definitiva.
-			</p>
 		</div>
 	</section>
 	<section class="section">
+		<div class="container about-grid">
+			<div>
+				<p class="eyebrow">Empresa</p>
+				<h2>Atención comercial para operaciones forestales en Colombia</h2>
+				<p>
+					{siteConfig.name} comercializa maquinaria, equipos y repuestos para operaciones forestales en Colombia. Desde Medellín, atendemos clientes en distintas regiones del país y acompañamos la selección de equipos según las necesidades de cada operación.
+				</p>
+				<p>
+					Nuestro canal principal de atención es directo: revisamos cada consulta por WhatsApp o correo para orientar la conversación comercial de forma clara.
+				</p>
+			</div>
+			<div class="about-visual" aria-hidden="true">
+				<div class="visual-placeholder"></div>
+			</div>
+		</div>
+	</section>
+	<section class="section section--surface">
+		<div class="container">
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">Enfoque</p>
+					<h2>Qué puede consultar con nosotros</h2>
+				</div>
+			</div>
+			<div class="grid service-grid">
+				<article class="card">
+					<h3>Maquinaria y equipos forestales</h3>
+					<p>Opciones para operaciones que requieren equipos de trabajo forestal.</p>
+				</article>
+				<article class="card">
+					<h3>Repuestos</h3>
+					<p>Consultas comerciales sobre repuestos y necesidades asociadas a los equipos.</p>
+				</article>
+				<article class="card">
+					<h3>Asesoría comercial</h3>
+					<p>Orientación para revisar alternativas según el tipo de operación y disponibilidad.</p>
+				</article>
+				<article class="card">
+					<h3>Cobertura nacional</h3>
+					<p>Atención desde {siteConfig.location} para consultas en {siteConfig.coverage}.</p>
+				</article>
+			</div>
+		</div>
+	</section>
+	<section class="section section--compact">
 		<div class="container">
 			<ContactCTA />
 		</div>
 	</section>
 </BaseLayout>
+
+<style>
+	.about-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(280px, 0.75fr);
+		gap: 28px;
+		align-items: center;
+	}
+
+	.about-visual .visual-placeholder {
+		min-height: 300px;
+	}
+
+	.service-grid {
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+	}
+
+	.service-grid p {
+		color: var(--color-muted);
+	}
+
+	@media (max-width: 800px) {
+		.about-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

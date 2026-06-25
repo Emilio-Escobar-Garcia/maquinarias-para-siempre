@@ -1,7 +1,8 @@
 ---
-import { siteConfig } from '../site.config';
+import { getWhatsAppUrl, siteConfig } from '../site.config';
 
 const navItems = [
+	{ href: '/', label: 'Inicio' },
 	{ href: '/productos/', label: 'Productos' },
 	{ href: '/categorias/', label: 'Categorías' },
 	{ href: '/marcas/', label: 'Marcas' },
@@ -13,20 +14,41 @@ const navItems = [
 <header class="site-header">
 	<div class="container header-inner">
 		<a class="brand" href="/" aria-label={`Inicio de ${siteConfig.name}`}>
+			<span class="brand-mark" aria-hidden="true">MPS</span>
 			<span>{siteConfig.name}</span>
 		</a>
-		<nav aria-label="Navegación principal">
+		<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+			<span class="menu-toggle-lines" aria-hidden="true"></span>
+			<span class="menu-toggle-label">Menú</span>
+		</button>
+		<nav id="primary-navigation" aria-label="Navegación principal">
 			<ul>
 				{navItems.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+				<li><a class="nav-cta" href={getWhatsAppUrl()}>WhatsApp</a></li>
 			</ul>
 		</nav>
 	</div>
 </header>
 
+<script>
+	const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+	const nav = document.querySelector<HTMLElement>('#primary-navigation');
+
+	toggle?.addEventListener('click', () => {
+		const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+		toggle.setAttribute('aria-expanded', String(!isOpen));
+		nav?.toggleAttribute('data-open', !isOpen);
+	});
+</script>
+
 <style>
 	.site-header {
-		background: #ffffff;
-		border-bottom: 1px solid var(--color-border);
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		background: rgba(255, 255, 255, 0.94);
+		border-bottom: 1px solid rgba(216, 224, 234, 0.75);
+		backdrop-filter: blur(14px);
 	}
 
 	.header-inner {
@@ -34,20 +56,81 @@ const navItems = [
 		align-items: center;
 		justify-content: space-between;
 		gap: 20px;
-		padding: 18px 0;
+		padding: 14px 0;
 	}
 
 	.brand {
-		color: var(--color-text);
-		font-size: 1.05rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		color: var(--color-primary);
+		font-size: 1rem;
 		font-weight: 800;
+		letter-spacing: 0;
 		text-decoration: none;
+	}
+
+	.brand-mark {
+		display: grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border-radius: 10px;
+		background:
+			linear-gradient(135deg, var(--color-primary), #1e6092),
+			var(--color-primary);
+		color: #ffffff;
+		font-size: 0.78rem;
+		letter-spacing: 0.05em;
+	}
+
+	.menu-toggle {
+		display: none;
+		align-items: center;
+		gap: 8px;
+		min-height: 44px;
+		padding: 8px 12px;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		background: #ffffff;
+		color: var(--color-primary);
+		font: inherit;
+		font-weight: 800;
+	}
+
+	.menu-toggle-lines,
+	.menu-toggle-lines::before,
+	.menu-toggle-lines::after {
+		display: block;
+		width: 18px;
+		height: 2px;
+		border-radius: 999px;
+		background: currentColor;
+	}
+
+	.menu-toggle-lines {
+		position: relative;
+	}
+
+	.menu-toggle-lines::before,
+	.menu-toggle-lines::after {
+		content: '';
+		position: absolute;
+		left: 0;
+	}
+
+	.menu-toggle-lines::before {
+		top: -6px;
+	}
+
+	.menu-toggle-lines::after {
+		top: 6px;
 	}
 
 	nav ul {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 14px;
+		gap: 6px;
 		align-items: center;
 		justify-content: flex-end;
 		padding: 0;
@@ -56,6 +139,11 @@ const navItems = [
 	}
 
 	nav a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 42px;
+		padding: 8px 10px;
+		border-radius: var(--radius-sm);
 		color: var(--color-text);
 		font-size: 0.95rem;
 		font-weight: 700;
@@ -63,17 +151,54 @@ const navItems = [
 	}
 
 	nav a:hover {
+		background: var(--color-primary-soft);
 		color: var(--color-primary);
+	}
+
+	.nav-cta {
+		margin-left: 4px;
+		border: 1px solid var(--color-accent);
+		background: var(--color-accent);
+		color: #ffffff;
+	}
+
+	.nav-cta:hover {
+		background: var(--color-accent-strong);
+		color: #ffffff;
 	}
 
 	@media (max-width: 760px) {
 		.header-inner {
-			align-items: flex-start;
-			flex-direction: column;
+			display: grid;
+			grid-template-columns: 1fr auto;
+		}
+
+		.menu-toggle {
+			display: inline-flex;
+		}
+
+		nav {
+			display: none;
+			grid-column: 1 / -1;
+			width: 100%;
+			padding-top: 8px;
+		}
+
+		nav[data-open] {
+			display: block;
 		}
 
 		nav ul {
-			justify-content: flex-start;
+			display: grid;
+			gap: 6px;
+			justify-content: stretch;
+		}
+
+		nav a,
+		.nav-cta {
+			width: 100%;
+			justify-content: space-between;
+			margin-left: 0;
 		}
 	}
 </style>

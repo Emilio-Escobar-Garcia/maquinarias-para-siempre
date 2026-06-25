@@ -7,16 +7,31 @@ const products = (await getCollection('products')).filter((product) => !product.
 ---
 
 <BaseLayout title="Productos | Maquinarias para Siempre" description="Catálogo de maquinaria forestal disponible para consulta comercial.">
-	<section class="section">
+	<section class="page-hero">
 		<div class="container">
 			<p class="eyebrow">Catálogo</p>
 			<h1>Productos</h1>
-			<p class="lead">Fichas de maquinaria forestal administradas mediante contenido estructurado.</p>
+			<p class="lead">Maquinaria, equipos y repuestos disponibles para consulta comercial.</p>
 		</div>
 	</section>
-	<section class="section section--compact">
-		<div class="container grid grid--cards">
-			{products.map((product) => <ProductCard product={product} />)}
+	<section class="section">
+		<div class="container">
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">Listado</p>
+					<h2>Productos publicados</h2>
+				</div>
+				<p>Revise los productos disponibles y contáctenos para consultar disponibilidad o información adicional.</p>
+			</div>
+			{
+				products.length > 0 ? (
+					<div class="grid grid--cards">
+						{products.map((product) => <ProductCard product={product} />)}
+					</div>
+				) : (
+					<p class="empty-state">Todavía no hay productos publicados.</p>
+				)
+			}
 		</div>
 	</section>
 </BaseLayout>

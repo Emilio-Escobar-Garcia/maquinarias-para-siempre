@@ -1,0 +1,203 @@
+---
+interface Props {
+	eyebrow: string;
+	title: string;
+	description: string;
+	allHref: string;
+	allLabel: string;
+}
+
+const { eyebrow, title, description, allHref, allLabel } = Astro.props;
+---
+
+<div class="home-scroller" data-home-scroller>
+	<div class="section-heading home-scroller__heading">
+		<div>
+			<p class="eyebrow">{eyebrow}</p>
+			<h2>{title}</h2>
+		</div>
+		<div class="home-scroller__summary">
+			<p>{description}</p>
+			<a href={allHref}>{allLabel}</a>
+		</div>
+	</div>
+
+	<div class="home-scroller__shell">
+		<div class="home-scroller__controls" aria-hidden="false">
+			<button type="button" class="home-scroller__button" data-scroll-prev aria-label={`Ver elementos anteriores de ${title}`}>
+				<span aria-hidden="true">‹</span>
+			</button>
+			<button type="button" class="home-scroller__button" data-scroll-next aria-label={`Ver elementos siguientes de ${title}`}>
+				<span aria-hidden="true">›</span>
+			</button>
+		</div>
+		<div class="home-scroller__track" data-scroll-track tabindex="0">
+			<slot />
+		</div>
+	</div>
+</div>
+
+<script>
+	const scrollers = document.querySelectorAll<HTMLElement>('[data-home-scroller]');
+
+	scrollers.forEach((scroller) => {
+		const track = scroller.querySelector<HTMLElement>('[data-scroll-track]');
+		const previous = scroller.querySelector<HTMLButtonElement>('[data-scroll-prev]');
+		const next = scroller.querySelector<HTMLButtonElement>('[data-scroll-next]');
+
+		if (!track || !previous || !next) return;
+
+		const getStep = () => Math.max(260, Math.floor(track.clientWidth * 0.82));
+		const hasOverflow = () => track.scrollWidth - track.clientWidth > 4;
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		const updateControls = () => {
+			const canScroll = hasOverflow();
+			scroller.toggleAttribute('data-ready', canScroll);
+			previous.disabled = !canScroll || track.scrollLeft <= 2;
+			next.disabled = !canScroll || track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+		};
+
+		const scrollByStep = (direction: number) => {
+			track.scrollBy({
+				left: getStep() * direction,
+				behavior: prefersReducedMotion ? 'auto' : 'smooth',
+			});
+		};
+
+		previous.addEventListener('click', () => scrollByStep(-1));
+		next.addEventListener('click', () => scrollByStep(1));
+		track.addEventListener('scroll', updateControls, { passive: true });
+		window.addEventListener('resize', updateControls);
+
+		track.addEventListener(
+			'wheel',
+			(event) => {
+				if (!hasOverflow() || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return;
+
+				const goingRight = event.deltaY > 0;
+				const atStart = track.scrollLeft <= 0;
+				const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+
+				if ((goingRight && atEnd) || (!goingRight && atStart)) return;
+
+				event.preventDefault();
+				track.scrollLeft += event.deltaY;
+			},
+			{ passive: false }
+		);
+
+		requestAnimationFrame(updateControls);
+	});
+</script>
+
+<style>
+	.home-scroller__heading {
+		align-items: start;
+	}
+
+	.home-scroller__summary {
+		display: grid;
+		gap: 10px;
+		justify-items: start;
+		max-width: 560px;
+	}
+
+	.home-scroller__summary p {
+		margin: 0;
+	}
+
+	.home-scroller__summary a {
+		font-weight: 800;
+		text-decoration-thickness: 2px;
+		text-underline-offset: 4px;
+	}
+
+	.home-scroller__shell {
+		position: relative;
+	}
+
+	.home-scroller__track {
+		display: flex;
+		gap: 20px;
+		align-items: stretch;
+		padding: 2px 2px 18px;
+		margin-inline: -2px;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-padding-inline: 2px;
+		scroll-snap-type: x mandatory;
+		overscroll-behavior-x: contain;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.home-scroller__track :global(> *) {
+		flex: 0 0 clamp(260px, 31vw, 340px);
+		scroll-snap-align: start;
+	}
+
+	.home-scroller__track :global(.card) {
+		height: 100%;
+	}
+
+	.home-scroller__controls {
+		display: none;
+		position: absolute;
+		right: 0;
+		top: -68px;
+		gap: 8px;
+		z-index: 2;
+	}
+
+	.home-scroller[data-ready] .home-scroller__controls {
+		display: flex;
+	}
+
+	.home-scroller__button {
+		display: grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		background: #ffffff;
+		color: var(--color-primary);
+		box-shadow: var(--shadow-soft);
+		cursor: pointer;
+	}
+
+	.home-scroller__button:hover:not(:disabled) {
+		border-color: var(--color-accent);
+		background: var(--color-primary-soft);
+	}
+
+	.home-scroller__button:disabled {
+		opacity: 0.36;
+		cursor: default;
+	}
+
+	.home-scroller__button span {
+		font-size: 1.9rem;
+		line-height: 1;
+		transform: translateY(-1px);
+	}
+
+	@media (max-width: 760px) {
+		.home-scroller__summary {
+			margin-top: 10px;
+		}
+
+		.home-scroller__controls {
+			display: none !important;
+		}
+
+		.home-scroller__track {
+			gap: 14px;
+			padding-bottom: 16px;
+		}
+
+		.home-scroller__track :global(> *) {
+			flex-basis: min(82vw, 320px);
+		}
+	}
+</style>

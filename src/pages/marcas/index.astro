@@ -7,16 +7,31 @@ const brands = (await getCollection('brands')).filter((brand) => !brand.data.dra
 ---
 
 <BaseLayout title="Marcas | Maquinarias para Siempre" description="Marcas incluidas en el catálogo de maquinaria forestal.">
-	<section class="section">
+	<section class="page-hero">
 		<div class="container">
 			<p class="eyebrow">Catálogo</p>
 			<h1>Marcas</h1>
 			<p class="lead">Listado de marcas preparadas para crecer con el catálogo.</p>
 		</div>
 	</section>
-	<section class="section section--compact">
-		<div class="container grid grid--cards">
-			{brands.map((brand) => <BrandCard brand={brand} />)}
+	<section class="section">
+		<div class="container">
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">Fabricantes</p>
+					<h2>Marcas publicadas</h2>
+				</div>
+				<p>Estas páginas agrupan productos por marca sin afirmar representaciones comerciales no confirmadas.</p>
+			</div>
+			{
+				brands.length > 0 ? (
+					<div class="grid grid--cards">
+						{brands.map((brand) => <BrandCard brand={brand} />)}
+					</div>
+				) : (
+					<p class="empty-state">Todavía no hay marcas publicadas.</p>
+				)
+			}
 		</div>
 	</section>
 </BaseLayout>

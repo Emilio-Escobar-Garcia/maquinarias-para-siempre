@@ -1,13 +1,28 @@
 ---
 import { getWhatsAppUrl, siteConfig } from '../site.config';
+
+const currentYear = new Date().getFullYear();
+const navItems = [
+	{ href: '/', label: 'Inicio' },
+	{ href: '/productos/', label: 'Productos' },
+	{ href: '/categorias/', label: 'Categorías' },
+	{ href: '/marcas/', label: 'Marcas' },
+	{ href: '/nosotros/', label: 'Nosotros' },
+	{ href: '/contacto/', label: 'Contacto' },
+];
 ---
 
 <footer class="site-footer">
 	<div class="container footer-grid">
-		<div>
+		<div class="footer-brand">
 			<h2>{siteConfig.name}</h2>
 			<p>{siteConfig.description}</p>
-			<p>{siteConfig.location} · Cobertura: {siteConfig.coverage}</p>
+		</div>
+		<div>
+			<h2>Navegación</h2>
+			<ul>
+				{navItems.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+			</ul>
 		</div>
 		<div>
 			<h2>Contacto</h2>
@@ -17,29 +32,41 @@ import { getWhatsAppUrl, siteConfig } from '../site.config';
 				<li><a href={siteConfig.instagramUrl}>{siteConfig.instagramHandle}</a></li>
 			</ul>
 		</div>
+		<div>
+			<h2>Ubicación</h2>
+			<p>{siteConfig.location}</p>
+			<p>Cobertura: {siteConfig.coverage}</p>
+			<p>{siteConfig.businessHours}</p>
+		</div>
+	</div>
+	<div class="container footer-bottom">
+		<p>© {currentYear} {siteConfig.name}. Todos los derechos reservados.</p>
 	</div>
 </footer>
 
 <style>
 	.site-footer {
-		padding: 36px 0;
-		background: #17251b;
-		color: #eef5ee;
+		padding: 48px 0 24px;
+		background:
+			linear-gradient(135deg, var(--color-primary-dark), var(--color-primary)),
+			var(--color-primary);
+		color: #eaf4fb;
 	}
 
 	.footer-grid {
 		display: grid;
-		grid-template-columns: minmax(0, 1.5fr) minmax(220px, 1fr);
-		gap: 28px;
+		grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(160px, 1fr));
+		gap: 32px;
 	}
 
 	h2 {
 		margin-bottom: 10px;
+		color: #ffffff;
 		font-size: 1rem;
 	}
 
 	p {
-		color: #d7e2d7;
+		color: #cfe1ef;
 	}
 
 	ul {
@@ -51,9 +78,28 @@ import { getWhatsAppUrl, siteConfig } from '../site.config';
 
 	a {
 		color: #ffffff;
+		text-decoration-color: rgba(255, 255, 255, 0.34);
+		text-underline-offset: 3px;
 	}
 
-	@media (max-width: 680px) {
+	.footer-bottom {
+		margin-top: 36px;
+		padding-top: 20px;
+		border-top: 1px solid rgba(255, 255, 255, 0.16);
+	}
+
+	.footer-bottom p {
+		margin: 0;
+		font-size: 0.92rem;
+	}
+
+	@media (max-width: 860px) {
+		.footer-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (max-width: 620px) {
 		.footer-grid {
 			grid-template-columns: 1fr;
 		}

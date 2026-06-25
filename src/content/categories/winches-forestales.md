@@ -1,13 +1,13 @@
 ---
 name: Winches forestales
 slug: winches-forestales
-shortDescription: Categoría provisional para organizar equipos forestales de arrastre.
-description: Contenido provisional para probar la estructura del catálogo. No corresponde a una ficha comercial publicada.
+shortDescription: Equipos forestales orientados a labores de arrastre y apoyo en campo.
+description: Categoría para consultar equipos usados en operaciones forestales que requieren fuerza de arrastre.
 alternativeTerms:
   - cabrestantes forestales
   - malacates forestales
 order: 1
 draft: false
 seoTitle: Winches forestales | Maquinarias para Siempre
-seoDescription: Categoría provisional para validar la estructura del catálogo de maquinaria forestal.
+seoDescription: Categoría de winches forestales dentro del catálogo de maquinaria forestal.
 ---
