@@ -2,10 +2,10 @@
 name: Winches forestales
 slug: winches-forestales
 shortDescription: Equipos forestales orientados a labores de arrastre y apoyo en campo.
-description: Categoría para consultar equipos usados en operaciones forestales que requieren fuerza de arrastre.
+description: Equipos para el arrastre y extracción de madera en operaciones forestales. La selección del modelo depende de la capacidad requerida, el tractor disponible y las condiciones del terreno.
 alternativeTerms:
+  - huinches forestales
   - cabrestantes forestales
-  - malacates forestales
 order: 1
 draft: false
 seoTitle: Winches forestales | Maquinarias para Siempre

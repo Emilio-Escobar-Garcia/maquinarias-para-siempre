@@ -27,7 +27,7 @@ const categories = (await getCollection('categories'))
 			</div>
 			{
 				categories.length > 0 ? (
-					<div class="grid grid--cards">
+					<div class="grid grid--cards category-grid">
 						{categories.map((category) => <CategoryCard category={category} />)}
 					</div>
 				) : (
@@ -37,3 +37,15 @@ const categories = (await getCollection('categories'))
 		</div>
 	</section>
 </BaseLayout>
+
+<style>
+	.category-grid {
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+	}
+
+	@media (min-width: 980px) {
+		.category-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+</style>

@@ -5,12 +5,13 @@ interface Props {
 	description: string;
 	allHref: string;
 	allLabel: string;
+	variant?: 'default' | 'categories' | 'products' | 'brands';
 }
 
-const { eyebrow, title, description, allHref, allLabel } = Astro.props;
+const { eyebrow, title, description, allHref, allLabel, variant = 'default' } = Astro.props;
 ---
 
-<div class="home-scroller" data-home-scroller>
+<div class="home-scroller" data-home-scroller data-variant={variant}>
 	<div class="section-heading home-scroller__heading">
 		<div>
 			<p class="eyebrow">{eyebrow}</p>
@@ -118,22 +119,41 @@ const { eyebrow, title, description, allHref, allLabel } = Astro.props;
 	}
 
 	.home-scroller__track {
-		display: flex;
-		gap: 20px;
+		--scroller-gap: 20px;
+		display: grid;
+		grid-auto-columns: var(--scroller-column-width, clamp(260px, 31vw, 340px));
+		grid-auto-flow: column;
+		gap: var(--scroller-gap);
 		align-items: stretch;
-		padding: 2px 2px 18px;
-		margin-inline: -2px;
+		width: 100%;
+		max-width: 100%;
+		padding: 2px 0 18px;
 		overflow-x: auto;
 		overflow-y: hidden;
-		scroll-padding-inline: 2px;
+		scroll-padding-inline: 0;
 		scroll-snap-type: x mandatory;
 		overscroll-behavior-x: contain;
 		-webkit-overflow-scrolling: touch;
 	}
 
-	.home-scroller__track :global(> *) {
-		flex: 0 0 clamp(260px, 31vw, 340px);
+	.home-scroller__track > :global(*) {
+		width: 100%;
+		min-width: 0;
 		scroll-snap-align: start;
+	}
+
+	.home-scroller[data-variant='categories'] {
+		--scroller-column-width: calc((100% - var(--scroller-gap) - var(--scroller-gap)) / 3);
+	}
+
+	.home-scroller[data-variant='products'] {
+		--scroller-column-width: calc((100% - var(--scroller-gap)) / 2);
+	}
+
+	.home-scroller[data-variant='brands'] {
+		--scroller-column-width: calc(
+			(100% - var(--scroller-gap) - var(--scroller-gap) - var(--scroller-gap)) / 4
+		);
 	}
 
 	.home-scroller__track :global(.card) {
@@ -192,12 +212,40 @@ const { eyebrow, title, description, allHref, allLabel } = Astro.props;
 		}
 
 		.home-scroller__track {
-			gap: 14px;
+			--scroller-gap: 14px;
 			padding-bottom: 16px;
 		}
 
-		.home-scroller__track :global(> *) {
-			flex-basis: min(82vw, 320px);
+		.home-scroller {
+			--scroller-column-width: min(82vw, 320px);
+		}
+
+		.home-scroller[data-variant='categories'] {
+			--scroller-column-width: min(82vw, 340px);
+		}
+
+		.home-scroller[data-variant='products'] {
+			--scroller-column-width: min(84vw, 360px);
+		}
+
+		.home-scroller[data-variant='brands'] {
+			--scroller-column-width: min(56vw, 240px);
+		}
+	}
+
+	@media (min-width: 761px) and (max-width: 1020px) {
+		.home-scroller[data-variant='categories'] {
+			--scroller-column-width: calc((100% - var(--scroller-gap)) / 2);
+		}
+
+		.home-scroller[data-variant='products'] {
+			--scroller-column-width: 58%;
+		}
+
+		.home-scroller[data-variant='brands'] {
+			--scroller-column-width: calc(
+				(100% - var(--scroller-gap) - var(--scroller-gap)) / 3
+			);
 		}
 	}
 </style>

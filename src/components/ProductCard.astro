@@ -43,20 +43,25 @@ const isDemoProduct = product.data.slug === 'producto-demostracion';
 	}
 
 	.card-link {
-		display: grid;
+		display: flex;
+		flex-direction: column;
 		height: 100%;
 		color: inherit;
 		text-decoration: none;
 	}
 
 	.product-visual {
-		min-height: 170px;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		min-height: 0;
 		border-width: 0 0 1px;
 		border-radius: 0;
 	}
 
 	.product-body {
-		display: grid;
+		display: flex;
+		flex: 1;
+		flex-direction: column;
 		gap: 10px;
 		padding: 22px;
 	}
@@ -80,6 +85,12 @@ const isDemoProduct = product.data.slug === 'producto-demostracion';
 
 	p {
 		color: var(--color-muted);
+		display: -webkit-box;
+		min-height: calc(1.65em * 3);
+		overflow: hidden;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		line-clamp: 3;
 	}
 
 	.tag {
@@ -95,6 +106,7 @@ const isDemoProduct = product.data.slug === 'producto-demostracion';
 	}
 
 	.read-more {
+		margin-top: auto;
 		color: var(--color-primary);
 		font-weight: 800;
 	}

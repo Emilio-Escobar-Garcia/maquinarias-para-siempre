@@ -72,6 +72,7 @@ const homeBrands = brands.slice(0, 8);
 						description="Consulte las líneas disponibles para ubicar el tipo de equipo que necesita."
 						allHref="/categorias/"
 						allLabel="Ver todas las categorías"
+						variant="categories"
 					>
 						{homeCategories.map((category) => <CategoryCard category={category} />)}
 					</HomeScroller>
@@ -92,6 +93,7 @@ const homeBrands = brands.slice(0, 8);
 						description="Una selección inicial de productos para iniciar consultas comerciales."
 						allHref="/productos/"
 						allLabel="Ver todos los productos"
+						variant="products"
 					>
 						{homeFeaturedProducts.map((product) => <ProductCard product={product} />)}
 					</HomeScroller>
@@ -112,6 +114,7 @@ const homeBrands = brands.slice(0, 8);
 						description="Marcas disponibles dentro de nuestro catálogo comercial."
 						allHref="/marcas/"
 						allLabel="Ver todas las marcas"
+						variant="brands"
 					>
 						{homeBrands.map((brand) => <BrandCard brand={brand} />)}
 					</HomeScroller>
