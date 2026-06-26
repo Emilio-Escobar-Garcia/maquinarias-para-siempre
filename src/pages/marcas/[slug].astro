@@ -28,35 +28,59 @@ const brandRelationship = isKrpan
 	? `${siteConfig.legalName} es ${siteConfig.krpanRelationship}.`
 	: `${brand.data.name} es ${siteConfig.representedBrandRelationship}.`;
 const brandMessage = `Hola, quiero consultar productos, referencias o configuraciones de ${brand.data.name}.`;
+const krpanLines = [
+	{
+		name: 'Winches forestales',
+		text: 'Equipos para arrastre y extracción de madera en operaciones forestales.',
+	},
+	{
+		name: 'Grúas forestales',
+		text: 'Equipos para apoyar la carga, descarga y manipulación de madera.',
+	},
+	{
+		name: 'Grapas forestales',
+		text: 'Implementos para sujetar, cargar y manipular troncos.',
+	},
+	{
+		name: 'Traileres forestales',
+		text: 'Equipos para transporte de madera y materiales forestales.',
+	},
+	{
+		name: 'Accesorios relacionados',
+		text: 'Otros equipos y accesorios forestales consultables según operación.',
+	},
+];
 const millLines = [
 	{
 		name: 'Mill Máquinas',
-		text: 'Equipos y soluciones para serrerías y procesamiento de madera.',
-		href: 'https://mill.com.br/mill-maquinas/',
+		text: 'Maquinaria y soluciones para serrerías y procesamiento industrial de madera, orientadas a procesos de aserrío, líneas de corte y procesamiento de toras y madera.',
+		image: '/images/solutions/mill/mill-maquinas-referencia.png',
+		imageAlt: 'Imagen oficial de referencia de maquinaria Mill Máquinas',
+		examples: ['Equipos para aserrío', 'Líneas de corte', 'Procesamiento de toras y madera'],
 	},
 	{
 		name: 'Mill Serras',
-		text: 'Sierras y hojas de sierra para aplicaciones en madera y otros sectores.',
-		href: 'https://mill.com.br/serras/',
+		text: 'Sierras y herramientas de corte para procesos industriales, con soluciones de corte para madera y aplicaciones relacionadas dentro de procesos productivos.',
+		image: '/images/solutions/mill/mill-serras-referencia.webp',
+		imageAlt: 'Imagen oficial de referencia de Mill Serras',
+		examples: ['Hojas de sierra cinta', 'Soluciones de corte para madera', 'Aplicaciones industriales'],
 	},
 ];
 const formikoLines = [
 	{
 		name: 'Rotadores hidráulicos',
 		text: 'Componentes para aplicaciones forestales, agrícolas y de manejo de materiales.',
-		href: 'https://www.formiko.lv/en/rotators/',
 	},
 	{
 		name: 'Elementos de unión para rotadores',
 		text: 'Componentes de conexión asociados a rotadores hidráulicos.',
-		href: 'https://www.formiko.lv/en/links/',
 	},
 	{
 		name: 'Amortiguadores de oscilación',
 		text: 'Elementos orientados al control de la oscilación según la aplicación.',
-		href: 'https://www.formiko.lv/en/links/',
 	},
 ];
+const brandLines = isKrpan ? krpanLines : isMill ? millLines : isFormiko ? formikoLines : [];
 ---
 
 <BaseLayout title={title} description={description}>
@@ -75,8 +99,11 @@ const formikoLines = [
 			{brand.data.description && <p>{brand.data.description}</p>}
 			<div class="button-row">
 				<a class="button button--dark" href="/marcas/">Ver marcas</a>
-				<a class="button button--dark" href="/productos/">Ver productos</a>
-				{brand.data.officialWebsite && <a class="button button--dark" href={brand.data.officialWebsite}>Sitio oficial</a>}
+				{brand.data.officialWebsite && (
+					<a class="button button--dark" href={brand.data.officialWebsite} target="_blank" rel="noopener noreferrer">
+						Visitar sitio oficial
+					</a>
+				)}
 			</div>
 		</div>
 	</section>
@@ -91,47 +118,32 @@ const formikoLines = [
 		</div>
 	</section>
 	{
-		isMill && (
+		brandLines.length > 0 && (
 			<section class="section section--compact">
 				<div class="container">
 					<div class="section-heading">
 						<div>
 							<p class="eyebrow">Líneas</p>
-							<h2>Líneas principales de Mill Indústrias</h2>
+							<h2>{isKrpan ? 'Líneas forestales de Krpan' : isMill ? 'Líneas principales de Mill Indústrias' : 'Líneas generales de Formiko Hydraulics'}</h2>
 						</div>
-						<p>Estas líneas orientan la consulta comercial. Las referencias y configuraciones se confirman para cada cotización.</p>
+						<p>
+							{isMill
+								? 'Mill Indústrias reúne soluciones para el procesamiento de madera en dos líneas principales. Las referencias y configuraciones se confirman para cada cotización.'
+								: 'Estas líneas orientan la consulta comercial. Las referencias, compatibilidades y configuraciones se confirman para cada cotización.'}
+						</p>
 					</div>
-					<div class="brand-lines">
-						{millLines.map((line) => (
-							<a class="brand-line" href={line.href}>
+					<div class={`brand-lines ${isKrpan ? 'brand-lines--wide' : ''} ${isMill ? 'brand-lines--visual' : ''}`}>
+						{brandLines.map((line) => (
+							<article class="brand-line">
+								{line.image && <img src={line.image} alt={line.imageAlt ?? `${line.name} de referencia`} loading="lazy" />}
 								<h3>{line.name}</h3>
 								<p>{line.text}</p>
-								<span>Consultar línea oficial</span>
-							</a>
-						))}
-					</div>
-				</div>
-			</section>
-		)
-	}
-	{
-		isFormiko && (
-			<section class="section section--compact">
-				<div class="container">
-					<div class="section-heading">
-						<div>
-							<p class="eyebrow">Líneas</p>
-							<h2>Líneas generales de Formiko Hydraulics</h2>
-						</div>
-						<p>Estas líneas ayudan a orientar la consulta comercial. Los modelos y combinaciones se confirman para cada cotización.</p>
-					</div>
-					<div class="brand-lines brand-lines--compact">
-						{formikoLines.map((line) => (
-							<a class="brand-line" href={line.href}>
-								<h3>{line.name}</h3>
-								<p>{line.text}</p>
-								<span>Consultar línea oficial</span>
-							</a>
+								{line.examples && (
+									<ul>
+										{line.examples.map((example) => <li>{example}</li>)}
+									</ul>
+								)}
+							</article>
 						))}
 					</div>
 				</div>
@@ -211,14 +223,23 @@ const formikoLines = [
 	}
 
 	.brand-line {
-		display: grid;
+		display: flex;
+		flex-direction: column;
 		gap: 10px;
 		padding: 18px;
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
 		background: #ffffff;
 		color: inherit;
-		text-decoration: none;
+	}
+
+	.brand-line img {
+		width: calc(100% + 36px);
+		aspect-ratio: 4 / 3;
+		margin: -18px -18px 8px;
+		border-bottom: 1px solid var(--color-border);
+		background: #ffffff;
+		object-fit: cover;
 	}
 
 	.brand-line h3 {
@@ -231,9 +252,39 @@ const formikoLines = [
 		color: var(--color-muted);
 	}
 
-	.brand-line span {
-		color: var(--color-primary);
-		font-weight: 800;
+	.brand-line ul {
+		display: grid;
+		gap: 6px;
+		margin: auto 0 0;
+		padding: 0;
+		list-style: none;
+		color: var(--color-muted);
+	}
+
+	.brand-line li {
+		position: relative;
+		padding-left: 14px;
+	}
+
+	.brand-line li::before {
+		position: absolute;
+		top: 0.72em;
+		left: 0;
+		width: 5px;
+		height: 5px;
+		border-radius: 999px;
+		background: var(--color-accent-strong);
+		content: '';
+	}
+
+	.brand-lines--wide {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.brand-lines--visual .brand-line {
+		min-height: 100%;
+		overflow: hidden;
+		padding: 18px;
 	}
 
 	.brand-logo {
@@ -255,7 +306,8 @@ const formikoLines = [
 	}
 
 	@media (max-width: 680px) {
-		.brand-lines {
+		.brand-lines,
+		.brand-lines--wide {
 			grid-template-columns: 1fr;
 		}
 	}

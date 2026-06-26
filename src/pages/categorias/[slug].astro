@@ -3,8 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
-import SparePartsCTA from '../../components/SparePartsCTA.astro';
-import { sortProductsByCommercialPriority } from '../../site.config';
+import { getWhatsAppUrl, sortProductsByCommercialPriority } from '../../site.config';
 
 export async function getStaticPaths() {
 	const categories = (await getCollection('categories')).filter((category) => !category.data.draft);
@@ -22,7 +21,7 @@ const products = sortProductsByCommercialPriority(
 );
 const title = category.data.seoTitle ?? `${category.data.name} | Maquinarias para Siempre`;
 const description = category.data.seoDescription ?? category.data.shortDescription;
-const isWinchesCategory = category.data.slug === 'winches-forestales';
+const advisorMessage = `Hola, quiero consultar una referencia o configuración de ${category.data.name}.`;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -46,26 +45,48 @@ const isWinchesCategory = category.data.slug === 'winches-forestales';
 		</div>
 	</section>
 	{
+		category.data.intro && (
+			<section class="section section--compact">
+				<div class="container">
+					<div class="category-intro">
+						<p class="eyebrow">Guía de selección</p>
+						<h2>{category.data.intro.title}</h2>
+						<p>{category.data.intro.body}</p>
+					</div>
+				</div>
+			</section>
+		)
+	}
+	{
 		category.data.image && (
 			<section class="section section--compact">
 				<div class="container">
 					<figure class="category-reference">
 						<img src={category.data.image} alt={category.data.imageAlt ?? `${category.data.name} de referencia`} />
-						<figcaption>Las imágenes son de referencia y pueden mostrar configuraciones opcionales.</figcaption>
+						{category.data.imageCaption && <figcaption>{category.data.imageCaption}</figcaption>}
 					</figure>
 				</div>
 			</section>
 		)
 	}
 	{
-		isWinchesCategory && (
+		category.data.selectionFactors.length > 0 && (
 			<section class="section section--compact">
 				<div class="container">
-					<div class="advisory-note">
-						<h2>Selección del equipo</h2>
-						<p>
-							No todos los equipos son adecuados para las mismas condiciones. La elección depende del tractor, la capacidad requerida, el terreno y el tipo de trabajo. Nuestro equipo puede orientarte antes de preparar una cotización.
-						</p>
+					<div class="section-heading section-heading--stacked">
+						<div>
+							<p class="eyebrow">Selección</p>
+							<h2>Qué debes tener en cuenta</h2>
+						</div>
+						<p>Estos puntos orientan la conversación inicial. La configuración se confirma siempre para cada cotización.</p>
+					</div>
+					<div class="factor-grid">
+						{category.data.selectionFactors.map((factor) => (
+							<article class="factor-card">
+								<h3>{factor.title}</h3>
+								<p>{factor.text}</p>
+							</article>
+						))}
 					</div>
 				</div>
 			</section>
@@ -86,16 +107,26 @@ const isWinchesCategory = category.data.slug === 'winches-forestales';
 						{products.map((product) => <ProductCard product={product} />)}
 					</div>
 				) : (
-					<p class="empty-state">Todavía no hay productos publicados en esta categoría.</p>
+					<div class="category-empty">
+						<p>{category.data.emptyProductsText ?? 'Todavía no hay productos publicados en esta categoría. Podemos revisar referencias y configuraciones bajo consulta comercial.'}</p>
+						<a class="button" href={getWhatsAppUrl(advisorMessage)}>{category.data.advisorButtonLabel ?? 'Consultar esta categoría'}</a>
+					</div>
 				)
 			}
 		</div>
 	</section>
 	{
-		isWinchesCategory && (
+		category.data.advisorText && (
 			<section class="section section--compact">
 				<div class="container">
-					<SparePartsCTA />
+					<div class="advisory-note">
+						<div>
+							<p class="eyebrow">Asesoría</p>
+							<h2>Consulta comercial de {category.data.name.toLowerCase()}</h2>
+							<p>{category.data.advisorText}</p>
+						</div>
+						<a class="button" href={getWhatsAppUrl(advisorMessage)}>{category.data.advisorButtonLabel ?? 'Consultar esta categoría'}</a>
+					</div>
 				</div>
 			</section>
 		)
@@ -108,19 +139,15 @@ const isWinchesCategory = category.data.slug === 'winches-forestales';
 </BaseLayout>
 
 <style>
-	.advisory-note {
-		padding: 24px;
-		border: 1px solid rgba(74, 163, 223, 0.28);
-		border-radius: var(--radius-md);
-		background: #ffffff;
+	.category-intro {
+		max-width: 860px;
 	}
 
-	.advisory-note h2 {
-		font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+	.category-intro h2 {
+		font-size: clamp(1.5rem, 2.6vw, 2.1rem);
 	}
 
-	.advisory-note p {
-		max-width: 780px;
+	.category-intro p:not(.eyebrow) {
 		color: var(--color-muted);
 	}
 
@@ -135,7 +162,7 @@ const isWinchesCategory = category.data.slug === 'winches-forestales';
 	.category-reference img {
 		display: block;
 		width: 100%;
-		max-height: 460px;
+		max-height: 340px;
 		object-fit: contain;
 	}
 
@@ -144,5 +171,77 @@ const isWinchesCategory = category.data.slug === 'winches-forestales';
 		border-top: 1px solid var(--color-border);
 		color: var(--color-muted);
 		font-size: 0.92rem;
+	}
+
+	.factor-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 14px;
+	}
+
+	.factor-card,
+	.category-empty,
+	.advisory-note {
+		padding: 20px;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: #ffffff;
+	}
+
+	.factor-card h3 {
+		margin-bottom: 8px;
+		color: var(--color-ink);
+		font-size: 1.05rem;
+	}
+
+	.factor-card p,
+	.category-empty p,
+	.advisory-note p:not(.eyebrow) {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	.category-empty {
+		display: grid;
+		gap: 16px;
+		max-width: 780px;
+	}
+
+	.category-empty .button {
+		justify-self: start;
+	}
+
+	.advisory-note {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 20px;
+	}
+
+	.advisory-note h2 {
+		font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+	}
+
+	.advisory-note p:not(.eyebrow) {
+		max-width: 780px;
+	}
+
+	.advisory-note .button {
+		flex: 0 0 auto;
+	}
+
+	@media (max-width: 720px) {
+		.factor-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.category-reference img {
+			max-height: 280px;
+		}
+
+		.advisory-note {
+			align-items: start;
+			flex-direction: column;
+		}
 	}
 </style>

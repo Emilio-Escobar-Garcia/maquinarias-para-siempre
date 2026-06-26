@@ -38,7 +38,25 @@ const categories = defineCollection({
 		description: z.string().optional(),
 		image: z.string().optional(),
 		imageAlt: z.string().optional(),
+		imageCaption: z.string().optional(),
 		alternativeTerms: z.array(z.string()).default([]),
+		intro: z
+			.object({
+				title: z.string(),
+				body: z.string(),
+			})
+			.optional(),
+		selectionFactors: z
+			.array(
+				z.object({
+					title: z.string(),
+					text: z.string(),
+				})
+			)
+			.default([]),
+		advisorText: z.string().optional(),
+		advisorButtonLabel: z.string().optional(),
+		emptyProductsText: z.string().optional(),
 		order: z.number().default(0),
 		draft: z.boolean().default(false),
 		...seoSchema,
