@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
+import { siteConfig, sortProductsByCommercialPriority } from '../../site.config';
 
 export async function getStaticPaths() {
 	const brands = (await getCollection('brands')).filter((brand) => !brand.data.draft);
@@ -12,8 +14,10 @@ export async function getStaticPaths() {
 }
 
 const { brand } = Astro.props;
-const products = (await getCollection('products')).filter(
-	(product) => !product.data.draft && product.data.brand.id === brand.id
+const products = sortProductsByCommercialPriority(
+	(await getCollection('products')).filter(
+		(product) => !product.data.draft && product.data.brand.id === brand.id
+	)
 );
 const title = brand.data.seoTitle ?? `${brand.data.name} | Maquinarias para Siempre`;
 const description = brand.data.seoDescription ?? brand.data.shortDescription;
@@ -23,6 +27,13 @@ const description = brand.data.seoDescription ?? brand.data.shortDescription;
 	<section class="page-hero">
 		<div class="container">
 			<p class="eyebrow">Marca</p>
+			{
+				brand.data.logo && (
+					<div class="brand-logo">
+						<img src={brand.data.logo} alt={brand.data.logoAlt ?? `Logo de ${brand.data.name}`} />
+					</div>
+				)
+			}
 			<h1>{brand.data.name}</h1>
 			<p class="lead">{brand.data.shortDescription}</p>
 			{brand.data.description && <p>{brand.data.description}</p>}
@@ -33,6 +44,20 @@ const description = brand.data.seoDescription ?? brand.data.shortDescription;
 			</div>
 		</div>
 	</section>
+	{
+		brand.data.slug === 'krpan' && (
+			<section class="section section--compact">
+				<div class="container">
+					<div class="brand-note">
+						<h2>Krpan en Colombia</h2>
+						<p>
+							{siteConfig.legalName} es {siteConfig.krpanRelationship}. Las referencias mostradas permiten iniciar una consulta comercial y también podemos consultar otros modelos y configuraciones del fabricante, sujetos a confirmación.
+						</p>
+					</div>
+				</div>
+			</section>
+		)
+	}
 	<section class="section">
 		<div class="container">
 			<div class="section-heading">
@@ -53,4 +78,45 @@ const description = brand.data.seoDescription ?? brand.data.shortDescription;
 			}
 		</div>
 	</section>
+	<section class="section section--compact">
+		<div class="container">
+			<OtherReferenceCTA message={`Hola, quiero consultar otro modelo o configuración de ${brand.data.name}.`} />
+		</div>
+	</section>
 </BaseLayout>
+
+<style>
+	.brand-note {
+		padding: 24px;
+		border: 1px solid rgba(74, 163, 223, 0.28);
+		border-radius: var(--radius-md);
+		background: #ffffff;
+	}
+
+	.brand-note h2 {
+		font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+	}
+
+	.brand-note p {
+		max-width: 820px;
+		color: var(--color-muted);
+	}
+
+	.brand-logo {
+		display: grid;
+		place-items: center;
+		width: min(220px, 100%);
+		margin-bottom: 18px;
+		padding: 16px;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		border-radius: var(--radius-md);
+		background: rgba(8, 29, 54, 0.76);
+	}
+
+	.brand-logo img {
+		display: block;
+		width: 100%;
+		max-height: 94px;
+		object-fit: contain;
+	}
+</style>

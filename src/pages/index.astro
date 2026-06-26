@@ -6,9 +6,12 @@ import CategoryCard from '../components/CategoryCard.astro';
 import BrandCard from '../components/BrandCard.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import HomeScroller from '../components/HomeScroller.astro';
-import { getWhatsAppUrl, siteConfig } from '../site.config';
+import SparePartsCTA from '../components/SparePartsCTA.astro';
+import { getWhatsAppUrl, siteConfig, sortProductsByCommercialPriority } from '../site.config';
 
-const products = (await getCollection('products')).filter((product) => !product.data.draft);
+const products = sortProductsByCommercialPriority(
+	(await getCollection('products')).filter((product) => !product.data.draft)
+);
 const featuredProducts = products.filter((product) => product.data.featured);
 const categories = (await getCollection('categories'))
 	.filter((category) => !category.data.draft)
@@ -26,7 +29,7 @@ const homeBrands = brands.slice(0, 8);
 				<p class="eyebrow">Maquinarias para Siempre</p>
 				<h1>Maquinaria forestal para las exigencias del campo colombiano</h1>
 				<p class="lead">
-					Equipos europeos, repuestos y acompañamiento comercial para operaciones forestales en toda Colombia.
+					Maquinaria, equipos, sierras y repuestos con atención comercial desde Medellín para toda Colombia.
 				</p>
 				<div class="button-row">
 					<a class="button" href="/productos/">Ver productos</a>
@@ -56,7 +59,7 @@ const homeBrands = brands.slice(0, 8);
 			</div>
 			<div>
 				<p>
-					{siteConfig.name} comercializa maquinaria, equipos y repuestos para operaciones forestales en Colombia. Acompañamos a nuestros clientes en la búsqueda de soluciones acordes con el tipo de trabajo y las condiciones de cada operación.
+					{siteConfig.companyIntro} {siteConfig.legalName} es {siteConfig.krpanRelationship}.
 				</p>
 			</div>
 		</div>
@@ -69,7 +72,7 @@ const homeBrands = brands.slice(0, 8);
 					<HomeScroller
 						eyebrow="Categorías"
 						title="Categorías de productos"
-						description="Consulte las líneas disponibles para ubicar el tipo de equipo que necesita."
+						description="Consulte las líneas publicadas para ubicar el tipo de equipo que necesita."
 						allHref="/categorias/"
 						allLabel="Ver todas las categorías"
 						variant="categories"
@@ -90,7 +93,7 @@ const homeBrands = brands.slice(0, 8);
 					<HomeScroller
 						eyebrow="Destacados"
 						title="Productos destacados"
-						description="Una selección inicial de productos para iniciar consultas comerciales."
+						description="Referencias relevantes para iniciar una consulta comercial, sin prometer inventario ni plazo de entrega."
 						allHref="/productos/"
 						allLabel="Ver todos los productos"
 						variant="products"
@@ -104,6 +107,12 @@ const homeBrands = brands.slice(0, 8);
 		</div>
 	</section>
 
+	<section class="section section--compact">
+		<div class="container">
+			<SparePartsCTA />
+		</div>
+	</section>
+
 	<section class="section">
 		<div class="container">
 			{
@@ -111,7 +120,7 @@ const homeBrands = brands.slice(0, 8);
 					<HomeScroller
 						eyebrow="Marcas"
 						title="Marcas en el catálogo"
-						description="Marcas disponibles dentro de nuestro catálogo comercial."
+						description="Marcas publicadas dentro del catálogo comercial."
 						allHref="/marcas/"
 						allLabel="Ver todas las marcas"
 						variant="brands"

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContactCTA from '../../components/ContactCTA.astro';
+import SparePartsCTA from '../../components/SparePartsCTA.astro';
 import { siteConfig } from '../../site.config';
 ---
 
@@ -18,7 +19,10 @@ import { siteConfig } from '../../site.config';
 				<p class="eyebrow">Empresa</p>
 				<h2>Atención comercial para operaciones forestales en Colombia</h2>
 				<p>
-					{siteConfig.name} comercializa maquinaria, equipos y repuestos para operaciones forestales en Colombia. Desde Medellín, atendemos clientes en distintas regiones del país y acompañamos la selección de equipos según las necesidades de cada operación.
+					{siteConfig.companyIntro}
+				</p>
+				<p>
+					{siteConfig.legalName} es {siteConfig.krpanRelationship}. La atención se realiza desde {siteConfig.location} con cobertura comercial y entregas en toda Colombia.
 				</p>
 				<p>
 					Nuestro canal principal de atención es directo: revisamos cada consulta por WhatsApp o correo para orientar la conversación comercial de forma clara.
@@ -44,17 +48,26 @@ import { siteConfig } from '../../site.config';
 				</article>
 				<article class="card">
 					<h3>Repuestos</h3>
-					<p>Consultas comerciales sobre repuestos y necesidades asociadas a los equipos.</p>
+					<p>Consultas comerciales sobre repuestos básicos Krpan para winches y grapas forestales.</p>
 				</article>
 				<article class="card">
 					<h3>Asesoría comercial</h3>
-					<p>Orientación para revisar alternativas según el tipo de operación y disponibilidad.</p>
+					<p>Orientación para revisar alternativas según el tipo de operación, configuración y disponibilidad confirmada para cada cotización.</p>
 				</article>
 				<article class="card">
 					<h3>Cobertura nacional</h3>
-					<p>Atención desde {siteConfig.location} para consultas en {siteConfig.coverage}.</p>
+					<p>Atención desde {siteConfig.location} para consultas y entregas en {siteConfig.coverage}.</p>
+				</article>
+				<article class="card">
+					<h3>Horario de atención</h3>
+					<p>{siteConfig.businessHours}</p>
 				</article>
 			</div>
+		</div>
+	</section>
+	<section class="section section--compact">
+		<div class="container">
+			<SparePartsCTA />
 		</div>
 	</section>
 	<section class="section section--compact">

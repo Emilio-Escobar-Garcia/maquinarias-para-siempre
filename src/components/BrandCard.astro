@@ -10,7 +10,15 @@ const { brand } = Astro.props;
 
 <article class="card">
 	<a class="brand-link" href={`/marcas/${brand.data.slug}/`}>
-		<div class="brand-mark" aria-hidden="true">{brand.data.name.slice(0, 2).toUpperCase()}</div>
+		<div class={brand.data.logo ? 'brand-mark brand-mark--logo' : 'brand-mark'} aria-hidden={brand.data.logo ? undefined : 'true'}>
+			{
+				brand.data.logo ? (
+					<img src={brand.data.logo} alt={brand.data.logoAlt ?? `Logo de ${brand.data.name}`} loading="lazy" />
+				) : (
+					brand.data.name.slice(0, 2).toUpperCase()
+				)
+			}
+		</div>
 		<div class="brand-body">
 			<p class="eyebrow">Marca</p>
 			<h3>{brand.data.name}</h3>
@@ -48,7 +56,7 @@ const { brand } = Astro.props;
 	.brand-mark {
 		display: grid;
 		place-items: center;
-		width: 74px;
+		width: 96px;
 		height: 74px;
 		border-radius: var(--radius-md);
 		background:
@@ -57,6 +65,19 @@ const { brand } = Astro.props;
 		color: #ffffff;
 		font-weight: 900;
 		letter-spacing: 0.06em;
+	}
+
+	.brand-mark--logo {
+		width: 132px;
+		background: var(--color-primary-dark);
+		padding: 12px;
+	}
+
+	.brand-mark img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
 	}
 
 	.brand-body {

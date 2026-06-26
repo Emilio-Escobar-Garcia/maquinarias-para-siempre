@@ -86,6 +86,10 @@ documents:
     sourceUrl: https://www.vitli-krpan.com/es/files/default/katalogi/katalogi_novi_vitli_2026/KRPAN_katalog_novi_vitli_03-2026_EN_web_compressed.pdf
 availability: consultar
 featured: true
+relatedProducts:
+  - krpan-4-ep
+  - krpan-5-erp
+  - krpan-8-erp
 officialSource: https://www.vitli-krpan.com/es/programa-de-ventas/nuevos-huinches-forestales/serie-ep-erp/1858-krpan-6-erp
 sourceRecords:
   - label: Página oficial del producto

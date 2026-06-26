@@ -3,6 +3,8 @@ name: Grapas forestales
 slug: grapas-forestales
 shortDescription: Implementos para sujetar, cargar y manipular troncos en trabajos forestales.
 description: Implementos para sujetar, cargar y manipular troncos y otros materiales en trabajos forestales.
+image: /images/categories/grapas-forestales-krpan.png
+imageAlt: Grapa forestal Krpan de referencia
 alternativeTerms:
   - garras forestales
   - pinzas forestales

@@ -10,7 +10,13 @@ const { category } = Astro.props;
 
 <article class="card">
 	<a class="category-link" href={`/categorias/${category.data.slug}/`}>
-		<div class="visual-placeholder category-visual" aria-hidden="true"></div>
+		{
+			category.data.image ? (
+				<img class="category-visual category-image" src={category.data.image} alt={category.data.imageAlt ?? `${category.data.name} de referencia`} loading="lazy" />
+			) : (
+				<div class="visual-placeholder category-visual" aria-hidden="true"></div>
+			)
+		}
 		<div class="category-body">
 			<p class="eyebrow">Categoría</p>
 			<h3>{category.data.name}</h3>
@@ -52,6 +58,14 @@ const { category } = Astro.props;
 		min-height: 0;
 		border-width: 0 0 1px;
 		border-radius: 0;
+	}
+
+	.category-image {
+		display: block;
+		height: auto;
+		border-bottom: 1px solid var(--color-border);
+		background: #ffffff;
+		object-fit: contain;
 	}
 
 	.category-body {

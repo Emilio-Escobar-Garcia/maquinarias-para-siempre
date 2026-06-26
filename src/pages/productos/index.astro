@@ -2,16 +2,20 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
+import { sortProductsByCommercialPriority } from '../../site.config';
 
-const products = (await getCollection('products')).filter((product) => !product.data.draft);
+const products = sortProductsByCommercialPriority(
+	(await getCollection('products')).filter((product) => !product.data.draft)
+);
 ---
 
-<BaseLayout title="Productos | Maquinarias para Siempre" description="Catálogo de maquinaria forestal disponible para consulta comercial.">
+<BaseLayout title="Productos | Maquinarias para Siempre" description="Catálogo de maquinaria forestal para consulta comercial.">
 	<section class="page-hero">
 		<div class="container">
 			<p class="eyebrow">Catálogo</p>
 			<h1>Productos</h1>
-			<p class="lead">Maquinaria, equipos y repuestos disponibles para consulta comercial.</p>
+			<p class="lead">Referencias publicadas para orientar consultas comerciales y cotizaciones.</p>
 		</div>
 	</section>
 	<section class="section">
@@ -21,7 +25,7 @@ const products = (await getCollection('products')).filter((product) => !product.
 					<p class="eyebrow">Listado</p>
 					<h2>Productos publicados</h2>
 				</div>
-				<p>Revise los productos disponibles y contáctenos para consultar disponibilidad o información adicional.</p>
+				<p>Revise las referencias publicadas y contáctenos para confirmar configuración, disponibilidad y plazo de entrega.</p>
 			</div>
 			{
 				products.length > 0 ? (
@@ -32,6 +36,11 @@ const products = (await getCollection('products')).filter((product) => !product.
 					<p class="empty-state">Todavía no hay productos publicados.</p>
 				)
 			}
+		</div>
+	</section>
+	<section class="section section--compact">
+		<div class="container">
+			<OtherReferenceCTA />
 		</div>
 	</section>
 </BaseLayout>

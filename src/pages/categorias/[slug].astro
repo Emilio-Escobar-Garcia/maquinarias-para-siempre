@@ -2,6 +2,9 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
+import SparePartsCTA from '../../components/SparePartsCTA.astro';
+import { sortProductsByCommercialPriority } from '../../site.config';
 
 export async function getStaticPaths() {
 	const categories = (await getCollection('categories')).filter((category) => !category.data.draft);
@@ -12,11 +15,14 @@ export async function getStaticPaths() {
 }
 
 const { category } = Astro.props;
-const products = (await getCollection('products')).filter(
-	(product) => !product.data.draft && product.data.category.id === category.id
+const products = sortProductsByCommercialPriority(
+	(await getCollection('products')).filter(
+		(product) => !product.data.draft && product.data.category.id === category.id
+	)
 );
 const title = category.data.seoTitle ?? `${category.data.name} | Maquinarias para Siempre`;
 const description = category.data.seoDescription ?? category.data.shortDescription;
+const isWinchesCategory = category.data.slug === 'winches-forestales';
 ---
 
 <BaseLayout title={title} description={description}>
@@ -39,6 +45,32 @@ const description = category.data.seoDescription ?? category.data.shortDescripti
 			</div>
 		</div>
 	</section>
+	{
+		category.data.image && (
+			<section class="section section--compact">
+				<div class="container">
+					<figure class="category-reference">
+						<img src={category.data.image} alt={category.data.imageAlt ?? `${category.data.name} de referencia`} />
+						<figcaption>Las imágenes son de referencia y pueden mostrar configuraciones opcionales.</figcaption>
+					</figure>
+				</div>
+			</section>
+		)
+	}
+	{
+		isWinchesCategory && (
+			<section class="section section--compact">
+				<div class="container">
+					<div class="advisory-note">
+						<h2>Selección del equipo</h2>
+						<p>
+							No todos los equipos son adecuados para las mismas condiciones. La elección depende del tractor, la capacidad requerida, el terreno y el tipo de trabajo. Nuestro equipo puede orientarte antes de preparar una cotización.
+						</p>
+					</div>
+				</div>
+			</section>
+		)
+	}
 	<section class="section">
 		<div class="container">
 			<div class="section-heading">
@@ -59,4 +91,58 @@ const description = category.data.seoDescription ?? category.data.shortDescripti
 			}
 		</div>
 	</section>
+	{
+		isWinchesCategory && (
+			<section class="section section--compact">
+				<div class="container">
+					<SparePartsCTA />
+				</div>
+			</section>
+		)
+	}
+	<section class="section section--compact">
+		<div class="container">
+			<OtherReferenceCTA message={`Hola, quiero consultar otra referencia o configuración de ${category.data.name}.`} />
+		</div>
+	</section>
 </BaseLayout>
+
+<style>
+	.advisory-note {
+		padding: 24px;
+		border: 1px solid rgba(74, 163, 223, 0.28);
+		border-radius: var(--radius-md);
+		background: #ffffff;
+	}
+
+	.advisory-note h2 {
+		font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+	}
+
+	.advisory-note p {
+		max-width: 780px;
+		color: var(--color-muted);
+	}
+
+	.category-reference {
+		margin: 0;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: #ffffff;
+		overflow: hidden;
+	}
+
+	.category-reference img {
+		display: block;
+		width: 100%;
+		max-height: 460px;
+		object-fit: contain;
+	}
+
+	.category-reference figcaption {
+		padding: 10px 14px;
+		border-top: 1px solid var(--color-border);
+		color: var(--color-muted);
+		font-size: 0.92rem;
+	}
+</style>

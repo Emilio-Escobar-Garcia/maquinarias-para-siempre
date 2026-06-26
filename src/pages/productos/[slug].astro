@@ -2,7 +2,8 @@
 import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { getWhatsAppUrl, siteConfig } from '../../site.config';
+import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
+import { getWhatsAppUrl, siteConfig, sortProductsByCommercialPriority } from '../../site.config';
 
 export async function getStaticPaths() {
 	const products = (await getCollection('products')).filter((product) => !product.data.draft);
@@ -18,7 +19,9 @@ const category = await getEntry(product.data.category);
 const relatedProducts = product.data.relatedProducts
 	? await Promise.all(product.data.relatedProducts.map((related) => getEntry(related)))
 	: [];
-const visibleRelatedProducts = relatedProducts.filter((entry) => entry && !entry.data.draft);
+const visibleRelatedProducts = sortProductsByCommercialPriority(
+	relatedProducts.filter((entry) => entry && !entry.data.draft)
+);
 const title = product.data.seoTitle ?? `${product.data.name} | Maquinarias para Siempre`;
 const description = product.data.seoDescription ?? product.data.shortDescription;
 const images = (product.data.images ?? []).map((image) =>
@@ -54,8 +57,6 @@ const resources = [
 		: []),
 ];
 const productMessage = `Hola, quiero recibir información sobre ${product.data.name}.`;
-const availabilityLabel =
-	product.data.availability === 'consultar' ? 'Consultar disponibilidad' : product.data.availability;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -174,13 +175,13 @@ const availabilityLabel =
 			<aside class="product-sidebar">
 				<div class="card side-card">
 					<h2>Consulta comercial</h2>
+					{product.data.availability && (
+						<div class="availability-box">
+							<h3>{siteConfig.availabilityHeading}</h3>
+							<p>{siteConfig.availabilityText}</p>
+						</div>
+					)}
 					<dl class="meta-list">
-						{product.data.availability && (
-							<div>
-								<dt>Disponibilidad</dt>
-								<dd>{availabilityLabel}</dd>
-							</div>
-						)}
 						<div>
 							<dt>Marca</dt>
 							<dd>{brand ? <a href={`/marcas/${brand.data.slug}/`}>{brand.data.name}</a> : 'Sin marca'}</dd>
@@ -224,6 +225,12 @@ const availabilityLabel =
 			</section>
 		)
 	}
+
+	<section class="section section--compact">
+		<div class="container">
+			<OtherReferenceCTA message={`Hola, quiero consultar otra referencia o configuración relacionada con ${product.data.name}.`} />
+		</div>
+	</section>
 
 	<section class="section section--compact">
 		<div class="container">
@@ -516,6 +523,28 @@ const availabilityLabel =
 		display: grid;
 		gap: 10px;
 		margin-top: 18px;
+	}
+
+	.availability-box {
+		display: grid;
+		gap: 8px;
+		margin: 0 0 16px;
+		padding: 14px;
+		border: 1px solid rgba(74, 163, 223, 0.26);
+		border-radius: var(--radius-sm);
+		background: var(--color-primary-soft);
+	}
+
+	.availability-box h3 {
+		margin: 0;
+		color: var(--color-primary);
+		font-size: 1rem;
+	}
+
+	.availability-box p {
+		color: var(--color-muted);
+		font-size: 0.95rem;
+		margin: 0;
 	}
 
 	.side-actions .button {

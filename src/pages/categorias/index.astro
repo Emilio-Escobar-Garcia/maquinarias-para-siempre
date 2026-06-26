@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CategoryCard from '../../components/CategoryCard.astro';
+import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
 
 const categories = (await getCollection('categories'))
 	.filter((category) => !category.data.draft)
@@ -21,7 +22,7 @@ const categories = (await getCollection('categories'))
 			<div class="section-heading">
 				<div>
 					<p class="eyebrow">Líneas</p>
-					<h2>Categorías disponibles</h2>
+					<h2>Categorías del catálogo</h2>
 				</div>
 				<p>Encuentre productos según el tipo de trabajo o equipo que necesita.</p>
 			</div>
@@ -34,6 +35,11 @@ const categories = (await getCollection('categories'))
 					<p class="empty-state">Todavía no hay categorías publicadas.</p>
 				)
 			}
+		</div>
+	</section>
+	<section class="section section--compact">
+		<div class="container">
+			<OtherReferenceCTA />
 		</div>
 	</section>
 </BaseLayout>
