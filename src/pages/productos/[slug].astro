@@ -36,6 +36,10 @@ const video =
 	typeof product.data.video === 'string'
 		? { url: product.data.video, label: 'Ver video' }
 		: product.data.video;
+const cleanVideoTitle = video?.label?.replace(/^Ver\s+/i, '');
+const videoTitle = cleanVideoTitle
+	? cleanVideoTitle.charAt(0).toUpperCase() + cleanVideoTitle.slice(1)
+	: 'Video oficial del producto';
 const resources = [
 	...documents.map((document) => ({
 		type: 'document',
@@ -48,8 +52,8 @@ const resources = [
 		? [
 				{
 					type: 'video',
-					title: 'Video oficial de la serie EP/ERP',
-					description: 'Material oficial del fabricante sobre la serie EP/ERP.',
+					title: videoTitle,
+					description: 'Material oficial del fabricante relacionado con este producto.',
 					href: video.url,
 					action: 'Ver video',
 				},
