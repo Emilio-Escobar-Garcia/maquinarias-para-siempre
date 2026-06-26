@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
-import { siteConfig, sortProductsByCommercialPriority } from '../../site.config';
+import { getWhatsAppUrl, siteConfig, sortProductsByCommercialPriority } from '../../site.config';
 
 export async function getStaticPaths() {
 	const brands = (await getCollection('brands')).filter((brand) => !brand.data.draft);
@@ -21,6 +21,42 @@ const products = sortProductsByCommercialPriority(
 );
 const title = brand.data.seoTitle ?? `${brand.data.name} | Maquinarias para Siempre`;
 const description = brand.data.seoDescription ?? brand.data.shortDescription;
+const isKrpan = brand.data.slug === 'krpan';
+const isMill = brand.data.slug === 'mill-industrias';
+const isFormiko = brand.data.slug === 'formiko-hydraulics';
+const brandRelationship = isKrpan
+	? `${siteConfig.legalName} es ${siteConfig.krpanRelationship}.`
+	: `${brand.data.name} es ${siteConfig.representedBrandRelationship}.`;
+const brandMessage = `Hola, quiero consultar productos, referencias o configuraciones de ${brand.data.name}.`;
+const millLines = [
+	{
+		name: 'Mill Máquinas',
+		text: 'Equipos y soluciones para serrerías y procesamiento de madera.',
+		href: 'https://mill.com.br/mill-maquinas/',
+	},
+	{
+		name: 'Mill Serras',
+		text: 'Sierras y hojas de sierra para aplicaciones en madera y otros sectores.',
+		href: 'https://mill.com.br/serras/',
+	},
+];
+const formikoLines = [
+	{
+		name: 'Rotadores hidráulicos',
+		text: 'Componentes para aplicaciones forestales, agrícolas y de manejo de materiales.',
+		href: 'https://www.formiko.lv/en/rotators/',
+	},
+	{
+		name: 'Elementos de unión para rotadores',
+		text: 'Componentes de conexión asociados a rotadores hidráulicos.',
+		href: 'https://www.formiko.lv/en/links/',
+	},
+	{
+		name: 'Amortiguadores de oscilación',
+		text: 'Elementos orientados al control de la oscilación según la aplicación.',
+		href: 'https://www.formiko.lv/en/links/',
+	},
+];
 ---
 
 <BaseLayout title={title} description={description}>
@@ -44,15 +80,59 @@ const description = brand.data.seoDescription ?? brand.data.shortDescription;
 			</div>
 		</div>
 	</section>
+	<section class="section section--compact">
+		<div class="container">
+			<div class="brand-note">
+				<h2>{brand.data.name} en Colombia</h2>
+				<p>
+					{brandRelationship} Las referencias y configuraciones se revisan para cada consulta comercial, sujetas a disponibilidad del fabricante y confirmación en la cotización.
+				</p>
+			</div>
+		</div>
+	</section>
 	{
-		brand.data.slug === 'krpan' && (
+		isMill && (
 			<section class="section section--compact">
 				<div class="container">
-					<div class="brand-note">
-						<h2>Krpan en Colombia</h2>
-						<p>
-							{siteConfig.legalName} es {siteConfig.krpanRelationship}. Las referencias mostradas permiten iniciar una consulta comercial y también podemos consultar otros modelos y configuraciones del fabricante, sujetos a confirmación.
-						</p>
+					<div class="section-heading">
+						<div>
+							<p class="eyebrow">Líneas</p>
+							<h2>Líneas principales de Mill Indústrias</h2>
+						</div>
+						<p>Estas líneas orientan la consulta comercial. Las referencias y configuraciones se confirman para cada cotización.</p>
+					</div>
+					<div class="brand-lines">
+						{millLines.map((line) => (
+							<a class="brand-line" href={line.href}>
+								<h3>{line.name}</h3>
+								<p>{line.text}</p>
+								<span>Consultar línea oficial</span>
+							</a>
+						))}
+					</div>
+				</div>
+			</section>
+		)
+	}
+	{
+		isFormiko && (
+			<section class="section section--compact">
+				<div class="container">
+					<div class="section-heading">
+						<div>
+							<p class="eyebrow">Líneas</p>
+							<h2>Líneas generales de Formiko Hydraulics</h2>
+						</div>
+						<p>Estas líneas ayudan a orientar la consulta comercial. Los modelos y combinaciones se confirman para cada cotización.</p>
+					</div>
+					<div class="brand-lines brand-lines--compact">
+						{formikoLines.map((line) => (
+							<a class="brand-line" href={line.href}>
+								<h3>{line.name}</h3>
+								<p>{line.text}</p>
+								<span>Consultar línea oficial</span>
+							</a>
+						))}
 					</div>
 				</div>
 			</section>
@@ -73,7 +153,10 @@ const description = brand.data.seoDescription ?? brand.data.shortDescription;
 						{products.map((product) => <ProductCard product={product} />)}
 					</div>
 				) : (
-					<p class="empty-state">Todavía no hay productos publicados para esta marca.</p>
+					<div class="brand-empty">
+						<p>Estamos preparando la información de esta línea. También puedes contactarnos para consultar equipos, referencias y configuraciones disponibles de esta marca.</p>
+						<a class="button" href={getWhatsAppUrl(brandMessage)}>Consultar productos de esta marca</a>
+					</div>
 				)
 			}
 		</div>
@@ -102,6 +185,57 @@ const description = brand.data.seoDescription ?? brand.data.shortDescription;
 		color: var(--color-muted);
 	}
 
+	.brand-empty {
+		display: grid;
+		gap: 16px;
+		max-width: 760px;
+		padding: 24px;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: #ffffff;
+	}
+
+	.brand-empty p {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	.brand-empty .button {
+		justify-self: start;
+	}
+
+	.brand-lines {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 14px;
+	}
+
+	.brand-line {
+		display: grid;
+		gap: 10px;
+		padding: 18px;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: #ffffff;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.brand-line h3 {
+		margin: 0;
+		color: var(--color-ink);
+	}
+
+	.brand-line p {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	.brand-line span {
+		color: var(--color-primary);
+		font-weight: 800;
+	}
+
 	.brand-logo {
 		display: grid;
 		place-items: center;
@@ -118,5 +252,11 @@ const description = brand.data.seoDescription ?? brand.data.shortDescription;
 		width: 100%;
 		max-height: 94px;
 		object-fit: contain;
+	}
+
+	@media (max-width: 680px) {
+		.brand-lines {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>

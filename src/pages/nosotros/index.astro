@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContactCTA from '../../components/ContactCTA.astro';
 import SparePartsCTA from '../../components/SparePartsCTA.astro';
-import { siteConfig } from '../../site.config';
+import { commercialSolutions, siteConfig } from '../../site.config';
 ---
 
 <BaseLayout title="Nosotros | Maquinarias para Siempre" description={siteConfig.description}>
@@ -22,7 +22,7 @@ import { siteConfig } from '../../site.config';
 					{siteConfig.companyIntro}
 				</p>
 				<p>
-					{siteConfig.legalName} es {siteConfig.krpanRelationship}. La atención se realiza desde {siteConfig.location} con cobertura comercial y entregas en toda Colombia.
+					{siteConfig.legalName} es {siteConfig.krpanRelationship}. También representa marcas como Formiko Hydraulics y Mill Indústrias. La atención se realiza desde {siteConfig.location} con cobertura comercial en toda Colombia.
 				</p>
 				<p>
 					Nuestro canal principal de atención es directo: revisamos cada consulta por WhatsApp o correo para orientar la conversación comercial de forma clara.
@@ -38,27 +38,41 @@ import { siteConfig } from '../../site.config';
 			<div class="section-heading">
 				<div>
 					<p class="eyebrow">Enfoque</p>
-					<h2>Qué puede consultar con nosotros</h2>
+					<h2>Soluciones para operaciones forestales y procesamiento de madera</h2>
+				</div>
+				<p>Estas líneas orientan la conversación comercial sin convertirlas en fichas de producto publicadas.</p>
+			</div>
+			<div class="grid service-grid">
+				{
+					commercialSolutions.map((solution) => (
+						<article class="card service-card">
+							<h3>{solution.title}</h3>
+							<p>{solution.text}</p>
+							<a href={solution.href}>Consultar línea</a>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+	<section class="section">
+		<div class="container">
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">Atención</p>
+					<h2>Asesoría y cobertura comercial</h2>
 				</div>
 			</div>
 			<div class="grid service-grid">
-				<article class="card">
-					<h3>Maquinaria y equipos forestales</h3>
-					<p>Opciones para operaciones que requieren equipos de trabajo forestal.</p>
-				</article>
-				<article class="card">
-					<h3>Repuestos</h3>
-					<p>Consultas comerciales sobre repuestos básicos Krpan para winches y grapas forestales.</p>
-				</article>
-				<article class="card">
-					<h3>Asesoría comercial</h3>
+				<article class="card service-card">
+					<h3>Selección de equipos</h3>
 					<p>Orientación para revisar alternativas según el tipo de operación, configuración y disponibilidad confirmada para cada cotización.</p>
 				</article>
-				<article class="card">
+				<article class="card service-card">
 					<h3>Cobertura nacional</h3>
-					<p>Atención desde {siteConfig.location} para consultas y entregas en {siteConfig.coverage}.</p>
+					<p>Atención desde {siteConfig.location} para consultas comerciales en {siteConfig.coverage}.</p>
 				</article>
-				<article class="card">
+				<article class="card service-card">
 					<h3>Horario de atención</h3>
 					<p>{siteConfig.businessHours}</p>
 				</article>
@@ -93,8 +107,20 @@ import { siteConfig } from '../../site.config';
 		grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
 	}
 
-	.service-grid p {
+	.service-card {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.service-card p {
 		color: var(--color-muted);
+	}
+
+	.service-card a {
+		margin-top: auto;
+		color: var(--color-primary);
+		font-weight: 800;
+		text-decoration: none;
 	}
 
 	@media (max-width: 800px) {

@@ -7,7 +7,7 @@ import BrandCard from '../components/BrandCard.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import HomeScroller from '../components/HomeScroller.astro';
 import SparePartsCTA from '../components/SparePartsCTA.astro';
-import { getWhatsAppUrl, siteConfig, sortProductsByCommercialPriority } from '../site.config';
+import { commercialSolutions, getWhatsAppUrl, siteConfig, sortProductsByCommercialPriority } from '../site.config';
 
 const products = sortProductsByCommercialPriority(
 	(await getCollection('products')).filter((product) => !product.data.draft)
@@ -16,7 +16,9 @@ const featuredProducts = products.filter((product) => product.data.featured);
 const categories = (await getCollection('categories'))
 	.filter((category) => !category.data.draft)
 	.sort((a, b) => a.data.order - b.data.order);
-const brands = (await getCollection('brands')).filter((brand) => !brand.data.draft);
+const brands = (await getCollection('brands'))
+	.filter((brand) => !brand.data.draft)
+	.sort((a, b) => a.data.name.localeCompare(b.data.name, 'es'));
 const homeCategories = categories.slice(0, 8);
 const homeFeaturedProducts = featuredProducts.slice(0, 8);
 const homeBrands = brands.slice(0, 8);
@@ -29,7 +31,7 @@ const homeBrands = brands.slice(0, 8);
 				<p class="eyebrow">Maquinarias para Siempre</p>
 				<h1>Maquinaria forestal para las exigencias del campo colombiano</h1>
 				<p class="lead">
-					Maquinaria, equipos, sierras y repuestos con atención comercial desde Medellín para toda Colombia.
+					Maquinaria, equipos, sierras y repuestos para operaciones forestales y procesamiento de madera en Colombia.
 				</p>
 				<div class="button-row">
 					<a class="button" href="/productos/">Ver productos</a>
@@ -59,7 +61,7 @@ const homeBrands = brands.slice(0, 8);
 			</div>
 			<div>
 				<p>
-					{siteConfig.companyIntro} {siteConfig.legalName} es {siteConfig.krpanRelationship}.
+					{siteConfig.companyIntro} La empresa atiende clientes en toda Colombia y trabaja con fabricantes especializados como Krpan, Formiko Hydraulics y Mill Indústrias.
 				</p>
 			</div>
 		</div>
@@ -120,7 +122,7 @@ const homeBrands = brands.slice(0, 8);
 					<HomeScroller
 						eyebrow="Marcas"
 						title="Marcas en el catálogo"
-						description="Marcas publicadas dentro del catálogo comercial."
+						description="Fabricantes y líneas representadas por Maquinarias para Siempre en Colombia."
 						allHref="/marcas/"
 						allLabel="Ver todas las marcas"
 						variant="brands"
@@ -139,31 +141,29 @@ const homeBrands = brands.slice(0, 8);
 			<div class="section-heading">
 				<div>
 					<p class="eyebrow">Soluciones</p>
-					<h2>Soluciones y acompañamiento</h2>
+					<h2>Soluciones para operaciones forestales y procesamiento de madera</h2>
 				</div>
-				<p>Atención comercial para orientar la búsqueda de equipos y repuestos según cada operación.</p>
+				<p>Estas líneas orientan la consulta inicial. Las referencias, configuraciones y disponibilidad se confirman en cada cotización.</p>
 			</div>
-			<div class="grid reason-grid">
-				<article class="card reason-card">
-					<span aria-hidden="true">01</span>
-					<h3>Maquinaria forestal</h3>
-					<p>Equipos orientados a labores forestales y necesidades del campo colombiano.</p>
-				</article>
-				<article class="card reason-card">
-					<span aria-hidden="true">02</span>
-					<h3>Repuestos</h3>
-					<p>Canales de consulta para identificar repuestos y requerimientos asociados a los equipos.</p>
-				</article>
-				<article class="card reason-card">
-					<span aria-hidden="true">03</span>
-					<h3>Asesoría comercial</h3>
-					<p>Acompañamiento para revisar opciones según el trabajo, la operación y la disponibilidad.</p>
-				</article>
-				<article class="card reason-card">
-					<span aria-hidden="true">04</span>
-					<h3>Cobertura nacional</h3>
-					<p>Atención a consultas comerciales para distintas regiones de Colombia.</p>
-				</article>
+			<div class="grid solution-grid">
+				{
+					commercialSolutions.map((solution) => (
+						<article class="card solution-card">
+							<a href={solution.href}>
+								{solution.image ? (
+									<img src={solution.image} alt={solution.alt} loading="lazy" />
+								) : (
+									<div class="solution-placeholder" aria-hidden="true">RP</div>
+								)}
+								<div>
+									<h3>{solution.title}</h3>
+									<p>{solution.text}</p>
+									<span>Consultar línea</span>
+								</div>
+							</a>
+						</article>
+					))
+				}
 			</div>
 		</div>
 	</section>
@@ -350,24 +350,58 @@ const homeBrands = brands.slice(0, 8);
 		align-items: start;
 	}
 
-	.reason-grid {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+	.solution-grid {
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
 	}
 
-	.reason-card span {
-		display: inline-grid;
+	.solution-card {
+		padding: 0;
+		overflow: hidden;
+	}
+
+	.solution-card a {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.solution-card img,
+	.solution-placeholder {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		border-bottom: 1px solid var(--color-border);
+		background: #ffffff;
+		object-fit: contain;
+	}
+
+	.solution-placeholder {
+		display: grid;
 		place-items: center;
-		width: 38px;
-		height: 38px;
-		margin-bottom: 16px;
-		border-radius: 999px;
-		background: var(--color-primary-soft);
-		color: var(--color-primary);
+		background:
+			linear-gradient(135deg, rgba(15, 47, 86, 0.92), rgba(74, 163, 223, 0.8)),
+			var(--color-primary);
+		color: #ffffff;
 		font-weight: 900;
+		letter-spacing: 0.06em;
 	}
 
-	.reason-card p {
+	.solution-card div:not(.solution-placeholder) {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		padding: 20px;
+	}
+
+	.solution-card p {
 		color: var(--color-muted);
+	}
+
+	.solution-card span {
+		margin-top: auto;
+		color: var(--color-primary);
+		font-weight: 800;
 	}
 
 	.coverage {
@@ -443,13 +477,13 @@ const homeBrands = brands.slice(0, 8);
 			grid-template-columns: 1fr;
 		}
 
-		.reason-grid {
+		.solution-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 
 	@media (max-width: 560px) {
-		.reason-grid {
+		.solution-grid {
 			grid-template-columns: 1fr;
 		}
 

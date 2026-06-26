@@ -12,6 +12,7 @@ features:
   - Frenos hidráulicos en las 4 ruedas de serie.
   - Luces LED plegables de serie.
   - Extensión del espacio de carga opcional.
+  - Puede configurarse con diferentes opciones de grúa, neumáticos, frenos, enganche y accesorios.
   - Compatibilidad oficial indicada con grúas GD 6,6 K o GD 6,4 K.
   - La configuración final del trailer, la grúa y la grapa debe confirmarse antes de preparar la cotización.
 applications:

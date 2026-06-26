@@ -26,9 +26,17 @@ Fecha de registro: 2026-06-26.
 ## Otras líneas y marcas
 
 - Rotadores forestales.
-- Forniko Hydraulics.
-- Mill Industrias Máquinas.
-- Mill Industrias Sierras.
+- Formiko Hydraulics.
+- Mill Indústrias.
+
+## Pendientes por marca
+
+- Modelos específicos de Formiko Hydraulics que comercializa Maquinarias para Siempre.
+- Confirmar si la relación con Formiko Hydraulics puede describirse como oficial, exclusiva o distribuidor autorizado.
+- Confirmar cuáles rotadores de Formiko Hydraulics se combinan comercialmente con las grapas y grúas ofrecidas.
+- Productos de las líneas Mill Máquinas y Mill Serras.
+- Denominaciones exactas de las grúas Krpan.
+- Configuraciones comerciales habituales del GP 8 DF.
 
 ## Pendiente antes de publicar
 
