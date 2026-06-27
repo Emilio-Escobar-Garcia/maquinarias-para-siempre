@@ -1,0 +1,289 @@
+---
+const slides = [
+	{
+		brand: 'Krpan',
+		text: 'Equipos forestales para arrastre, carga y transporte de madera.',
+		image: '/images/products/krpan-gp-8-df/krpan-gp-8-df-vista-1.jpg',
+		alt: 'Trailer forestal Krpan con grúa de referencia',
+		fit: 'contain',
+		width: 1920,
+		height: 1280,
+	},
+	{
+		brand: 'Formiko Hydraulics',
+		text: 'Rotadores hidráulicos y componentes para manipulación forestal.',
+		image: '/images/hero/formiko-forestry-application.jpg',
+		alt: 'Aplicación forestal mostrada por Formiko Hydraulics',
+		fit: 'cover',
+		width: 990,
+		height: 334,
+	},
+	{
+		brand: 'Mill Indústrias',
+		text: 'Soluciones para aserrío y procesamiento de madera.',
+		image: '/images/hero/mill-processing-equipment.webp',
+		alt: 'Maquinaria de procesamiento de madera Mill Indústrias',
+		fit: 'cover',
+		width: 958,
+		height: 719,
+	},
+];
+---
+
+<div class="hero-carousel" role="region" aria-roledescription="carrusel" aria-label="Marcas y soluciones representadas" tabindex="0" data-hero-carousel>
+	<div class="hero-carousel__slides" aria-live="off">
+		{slides.map((slide, index) => (
+			<article class:list={['hero-slide', { 'is-active': index === 0 }]} role="group" aria-roledescription="diapositiva" aria-label={`${index + 1} de ${slides.length}: ${slide.brand}`} aria-hidden={index === 0 ? 'false' : 'true'} data-hero-slide>
+				<img src={slide.image} alt={slide.alt} width={slide.width} height={slide.height} loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : 'auto'} data-fit={slide.fit} />
+				<div class="hero-slide__content">
+					<strong>{slide.brand}</strong>
+					<p>{slide.text}</p>
+					<small>Imagen de referencia</small>
+				</div>
+			</article>
+		))}
+	</div>
+	<button class="hero-carousel__arrow hero-carousel__arrow--previous" type="button" aria-label="Ver imagen anterior" data-hero-previous><span aria-hidden="true">&larr;</span></button>
+	<button class="hero-carousel__arrow hero-carousel__arrow--next" type="button" aria-label="Ver imagen siguiente" data-hero-next><span aria-hidden="true">&rarr;</span></button>
+	<div class="hero-carousel__dots" aria-label="Seleccionar imagen">
+		{slides.map((slide, index) => (
+			<button type="button" class:list={{ 'is-active': index === 0 }} aria-label={`Ver imagen de ${slide.brand}`} aria-pressed={index === 0 ? 'true' : 'false'} data-hero-dot></button>
+		))}
+	</div>
+</div>
+
+<script>
+	const carousels = document.querySelectorAll<HTMLElement>('[data-hero-carousel]');
+
+	carousels.forEach((carousel) => {
+		const slides = Array.from(carousel.querySelectorAll<HTMLElement>('[data-hero-slide]'));
+		const dots = Array.from(carousel.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
+		const previous = carousel.querySelector<HTMLButtonElement>('[data-hero-previous]');
+		const next = carousel.querySelector<HTMLButtonElement>('[data-hero-next]');
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		let activeIndex = 0;
+		let timer: number | undefined;
+		let pointerStart: { x: number; y: number } | undefined;
+		let pausedByHover = false;
+		let userInteracted = false;
+
+		const showSlide = (index: number) => {
+			activeIndex = (index + slides.length) % slides.length;
+			slides.forEach((slide, slideIndex) => {
+				const isActive = slideIndex === activeIndex;
+				slide.classList.toggle('is-active', isActive);
+				slide.setAttribute('aria-hidden', String(!isActive));
+			});
+			dots.forEach((dot, dotIndex) => {
+				const isActive = dotIndex === activeIndex;
+				dot.classList.toggle('is-active', isActive);
+				dot.setAttribute('aria-pressed', String(isActive));
+			});
+		};
+
+		const stopAutoplay = () => {
+			window.clearInterval(timer);
+			timer = undefined;
+		};
+
+		const startAutoplay = () => {
+			stopAutoplay();
+			if (reducedMotion.matches || pausedByHover || userInteracted || document.hidden) return;
+			timer = window.setInterval(() => showSlide(activeIndex + 1), 5000);
+		};
+
+		const interact = (nextIndex: number) => {
+			userInteracted = true;
+			stopAutoplay();
+			showSlide(nextIndex);
+		};
+
+		previous?.addEventListener('click', () => interact(activeIndex - 1));
+		next?.addEventListener('click', () => interact(activeIndex + 1));
+		dots.forEach((dot, index) => dot.addEventListener('click', () => interact(index)));
+
+		carousel.addEventListener('pointerenter', () => {
+			pausedByHover = true;
+			stopAutoplay();
+		});
+		carousel.addEventListener('pointerleave', () => {
+			pausedByHover = false;
+			startAutoplay();
+		});
+		carousel.addEventListener('focusin', stopAutoplay);
+		carousel.addEventListener('focusout', startAutoplay);
+		carousel.addEventListener('keydown', (event) => {
+			if (event.key === 'ArrowLeft') {
+				event.preventDefault();
+				interact(activeIndex - 1);
+			}
+			if (event.key === 'ArrowRight') {
+				event.preventDefault();
+				interact(activeIndex + 1);
+			}
+		});
+
+		carousel.addEventListener('pointerdown', (event) => {
+			if (event.pointerType === 'touch') pointerStart = { x: event.clientX, y: event.clientY };
+		});
+		carousel.addEventListener('pointerup', (event) => {
+			if (!pointerStart || event.pointerType !== 'touch') return;
+			const deltaX = event.clientX - pointerStart.x;
+			const deltaY = event.clientY - pointerStart.y;
+			pointerStart = undefined;
+			if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+			interact(activeIndex + (deltaX < 0 ? 1 : -1));
+		});
+		carousel.addEventListener('pointercancel', () => {
+			pointerStart = undefined;
+		});
+
+		reducedMotion.addEventListener('change', startAutoplay);
+		document.addEventListener('visibilitychange', startAutoplay);
+		startAutoplay();
+	});
+</script>
+
+<style>
+	.hero-carousel {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: 16px;
+		background: #ffffff;
+		box-shadow: 0 30px 80px rgba(0, 0, 0, 0.24);
+		overflow: hidden;
+		touch-action: pan-y;
+	}
+
+	.hero-carousel__slides,
+	.hero-slide {
+		position: absolute;
+		inset: 0;
+	}
+
+	.hero-slide {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 500ms ease;
+	}
+
+	.hero-slide.is-active {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.hero-slide img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.hero-slide img[data-fit='contain'] {
+		padding: 18px;
+		background: #f7f9fb;
+		object-fit: contain;
+	}
+
+	.hero-slide__content {
+		position: absolute;
+		inset: auto 0 0;
+		padding: 72px 72px 54px 24px;
+		background: linear-gradient(transparent, rgba(4, 17, 31, 0.92));
+		color: #ffffff;
+	}
+
+	.hero-slide__content strong {
+		display: inline-block;
+		margin-bottom: 6px;
+		font-size: 1.05rem;
+	}
+
+	.hero-slide__content p {
+		max-width: 420px;
+		margin: 0 0 4px;
+		color: rgba(255, 255, 255, 0.92);
+		font-size: 0.95rem;
+		line-height: 1.45;
+	}
+
+	.hero-slide__content small {
+		color: rgba(255, 255, 255, 0.68);
+	}
+
+	.hero-carousel__arrow {
+		position: absolute;
+		top: 50%;
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 1px solid rgba(255, 255, 255, 0.38);
+		border-radius: 50%;
+		background: rgba(8, 29, 54, 0.7);
+		color: #ffffff;
+		font: inherit;
+		font-size: 1.15rem;
+		cursor: pointer;
+		transform: translateY(-50%);
+		backdrop-filter: blur(8px);
+	}
+
+	.hero-carousel__arrow:hover {
+		background: rgba(8, 29, 54, 0.9);
+	}
+
+	.hero-carousel__arrow--previous {
+		left: 14px;
+	}
+
+	.hero-carousel__arrow--next {
+		right: 14px;
+	}
+
+	.hero-carousel__dots {
+		position: absolute;
+		right: 20px;
+		bottom: 20px;
+		display: flex;
+		gap: 8px;
+	}
+
+	.hero-carousel__dots button {
+		width: 12px;
+		height: 12px;
+		padding: 0;
+		border: 2px solid #ffffff;
+		border-radius: 50%;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.hero-carousel__dots button.is-active {
+		background: #ffffff;
+	}
+
+	@media (max-width: 560px) {
+		.hero-slide__content {
+			padding: 64px 58px 46px 18px;
+		}
+
+		.hero-slide__content p {
+			font-size: 0.88rem;
+		}
+
+		.hero-carousel__arrow {
+			width: 42px;
+			height: 42px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-slide {
+			transition: none;
+		}
+	}
+</style>
