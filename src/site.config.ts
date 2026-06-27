@@ -25,7 +25,7 @@ export const siteConfig = {
 		'Hola, quiero consultar otra referencia o configuración. Mi equipo o necesidad es:',
 	sparePartsTitle: 'Repuestos para equipos Krpan',
 	sparePartsText:
-		'Contamos con inventario local de algunos repuestos básicos para winches y grapas forestales Krpan. Para referencias y componentes específicos, consulta disponibilidad.',
+		'Consulta referencias y disponibilidad de repuestos para winches y grapas forestales Krpan según el equipo y el componente requerido.',
 	sparePartsMessage:
 		'Hola, quiero consultar disponibilidad de repuestos para un equipo Krpan.',
 	defaultWhatsAppMessage:
