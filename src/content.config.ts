@@ -118,6 +118,9 @@ const products = defineCollection({
 			)
 			.optional(),
 		availability: z.enum(availabilityValues).optional(),
+		advisorText: z.string().optional(),
+		advisorButtonLabel: z.string().optional(),
+		advisorMessage: z.string().optional(),
 		featured: z.boolean().default(false),
 		relatedProducts: z.array(reference('products')).optional(),
 		officialSource: z.string().url().optional(),

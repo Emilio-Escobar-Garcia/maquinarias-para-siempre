@@ -15,7 +15,7 @@ const navItems = [
 <footer class="site-footer">
 	<div class="container footer-grid">
 		<div class="footer-brand">
-			<h2>{siteConfig.name}</h2>
+			<h2>{siteConfig.legalName}</h2>
 			<p>{siteConfig.description}</p>
 		</div>
 		<div>
@@ -34,9 +34,8 @@ const navItems = [
 		</div>
 		<div>
 			<h2>Ubicación</h2>
-			<p>{siteConfig.location}</p>
-			<p>Cobertura: {siteConfig.coverage}</p>
-			<p>{siteConfig.businessHours}</p>
+			<p>{siteConfig.location} / {siteConfig.coverage}</p>
+			<p>{siteConfig.contactAvailability}</p>
 		</div>
 	</div>
 	<div class="container footer-bottom">

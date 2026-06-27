@@ -9,7 +9,7 @@ import { getWhatsAppUrl, siteConfig } from '../../site.config';
 			<p class="eyebrow">Contacto</p>
 			<h1>Contacto comercial</h1>
 			<p class="lead">
-				Escríbanos para consultar maquinaria, equipos o repuestos forestales en Colombia.
+				Escríbanos por WhatsApp o correo para revisar su solicitud de maquinaria, equipos o repuestos forestales.
 			</p>
 		</div>
 	</section>
@@ -18,7 +18,7 @@ import { getWhatsAppUrl, siteConfig } from '../../site.config';
 			<article class="card contact-card contact-card--primary">
 				<p class="eyebrow">WhatsApp</p>
 				<h2>Atención directa</h2>
-				<p>Cuéntenos qué tipo de equipo o repuesto está buscando.</p>
+				<p>Cuéntenos qué equipo busca, dónde se encuentra y qué tipo de trabajo realiza.</p>
 				<a class="button" href={getWhatsAppUrl()}>Escribir por WhatsApp</a>
 				<p class="contact-detail">{siteConfig.phone}</p>
 			</article>
@@ -26,7 +26,7 @@ import { getWhatsAppUrl, siteConfig } from '../../site.config';
 			<article class="card contact-card">
 				<p class="eyebrow">Correo</p>
 				<h2>Consulta por email</h2>
-				<p>Envíenos los datos de su consulta o del equipo que necesita.</p>
+				<p>Indique qué tractor o maquinaria tiene y si busca una referencia específica o asesoría.</p>
 				<div class="contact-actions">
 					<a class="button button--secondary" href={`mailto:${siteConfig.email}`}>Escribir correo</a>
 					<button class="button button--secondary copy-email" type="button" data-email={siteConfig.email}>Copiar dirección</button>
@@ -44,9 +44,14 @@ import { getWhatsAppUrl, siteConfig } from '../../site.config';
 			</article>
 
 			<article class="card contact-card contact-card--info">
-				<p class="eyebrow">Atención</p>
-				<h2>Horario y cobertura</h2>
-				<p>{siteConfig.businessHours}</p>
+				<p class="eyebrow">Consulta</p>
+				<h2>Qué información compartir</h2>
+				<ul>
+					<li>Equipo o referencia que busca.</li>
+					<li>Tractor o maquinaria disponible.</li>
+					<li>Ubicación y tipo de trabajo.</li>
+					<li>Si necesita una referencia específica o asesoría.</li>
+				</ul>
 				<p class="contact-detail">{siteConfig.location} · Cobertura nacional: {siteConfig.coverage}</p>
 			</article>
 		</div>
@@ -94,6 +99,13 @@ import { getWhatsAppUrl, siteConfig } from '../../site.config';
 
 	.contact-card p:not(.eyebrow) {
 		color: var(--color-muted);
+	}
+
+	.contact-card ul {
+		padding-left: 20px;
+		margin: 0;
+		color: var(--color-muted);
+		line-height: 1.65;
 	}
 
 	.contact-card--primary {

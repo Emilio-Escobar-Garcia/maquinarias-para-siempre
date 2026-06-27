@@ -22,14 +22,14 @@ import { commercialSolutions, siteConfig } from '../../site.config';
 					{siteConfig.companyIntro}
 				</p>
 				<p>
-					{siteConfig.legalName} es {siteConfig.krpanRelationship}. También representa marcas como Formiko Hydraulics y Mill Indústrias. La atención se realiza desde {siteConfig.location} con cobertura comercial en toda Colombia.
+					Maquinarias para Siempre S.A.S. representa en Colombia fabricantes especializados en maquinaria forestal, equipos hidráulicos, sierras y soluciones para el procesamiento de madera. Su portafolio incluye marcas como Krpan, Formiko Hydraulics y Mill Indústrias, con atención comercial desde Medellín, Antioquia, y cobertura en todo el país.
 				</p>
 				<p>
 					Nuestro canal principal de atención es directo: revisamos cada consulta por WhatsApp o correo para orientar la conversación comercial de forma clara.
 				</p>
 			</div>
-			<div class="about-visual" aria-hidden="true">
-				<div class="visual-placeholder"></div>
+			<div class="about-visual">
+				<img src={siteConfig.logo} alt="Maquinarias para Siempre" />
 			</div>
 		</div>
 	</section>
@@ -73,8 +73,8 @@ import { commercialSolutions, siteConfig } from '../../site.config';
 					<p>Atención desde {siteConfig.location} para consultas comerciales en {siteConfig.coverage}.</p>
 				</article>
 				<article class="card service-card">
-					<h3>Horario de atención</h3>
-					<p>{siteConfig.businessHours}</p>
+					<h3>Canales de contacto</h3>
+					<p>{siteConfig.contactAvailability} Cuéntenos qué equipo busca y las condiciones generales de su operación.</p>
 				</article>
 			</div>
 		</div>
@@ -99,8 +99,23 @@ import { commercialSolutions, siteConfig } from '../../site.config';
 		align-items: center;
 	}
 
-	.about-visual .visual-placeholder {
+	.about-visual {
+		display: grid;
+		place-items: center;
 		min-height: 300px;
+		padding: clamp(20px, 4vw, 36px);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: #ffffff;
+		box-shadow: var(--shadow-soft);
+	}
+
+	.about-visual img {
+		display: block;
+		width: 100%;
+		height: auto;
+		max-height: 280px;
+		object-fit: contain;
 	}
 
 	.service-grid {

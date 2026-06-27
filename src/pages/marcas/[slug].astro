@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
-import { getWhatsAppUrl, siteConfig, sortProductsByCommercialPriority } from '../../site.config';
+import { getWhatsAppUrl, siteConfig, sortProductsByCommercialPriority, whatsAppMessages } from '../../site.config';
 
 export async function getStaticPaths() {
 	const brands = (await getCollection('brands')).filter((brand) => !brand.data.draft);
@@ -27,7 +27,7 @@ const isFormiko = brand.data.slug === 'formiko-hydraulics';
 const brandRelationship = isKrpan
 	? `${siteConfig.legalName} es ${siteConfig.krpanRelationship}.`
 	: `${brand.data.name} es ${siteConfig.representedBrandRelationship}.`;
-const brandMessage = `Hola, quiero consultar productos, referencias o configuraciones de ${brand.data.name}.`;
+const brandMessage = whatsAppMessages.brand(brand.data.name);
 const krpanLines = [
 	{
 		name: 'Winches forestales',

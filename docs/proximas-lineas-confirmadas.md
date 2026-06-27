@@ -19,8 +19,8 @@ Fecha de registro: 2026-06-26.
 
 ## Grúas forestales
 
-- Referencia 6.6 pendiente de confirmar denominación completa.
-- Segunda referencia pendiente de confirmar si es 7.4 o 7.6.
+- KRPAN GD 6,6 K publicada como primera ficha de grúa forestal.
+- Segunda referencia pendiente de confirmar si es GD 7,4 K o GD 7,6 K.
 - Otras grúas de mayor capacidad pueden consultarse.
 
 ## Otras líneas y marcas

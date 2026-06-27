@@ -55,7 +55,11 @@ src/
 
 ## Datos generales de la empresa
 
-Edita `src/site.config.ts` para cambiar nombre, descripción, ubicación, WhatsApp, correo, Instagram, horario y avisos provisionales.
+Edita `src/site.config.ts` para cambiar nombre, descripción, logo, ubicación, WhatsApp, correo, Instagram y avisos provisionales.
+
+## Revisión en Netlify
+
+El sitio se compila como contenido estático mediante la configuración de `netlify.toml`. La indexación está desactivada por defecto para enlaces de revisión. Define `PUBLIC_SITE_INDEXABLE=true` en el entorno de publicación definitiva para permitir la indexación.
 
 ## Añadir una marca
 

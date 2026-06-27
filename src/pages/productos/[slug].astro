@@ -3,7 +3,7 @@ import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
-import { getWhatsAppUrl, siteConfig, sortProductsByCommercialPriority } from '../../site.config';
+import { getWhatsAppUrl, siteConfig, sortProductsByCommercialPriority, whatsAppMessages } from '../../site.config';
 
 export async function getStaticPaths() {
 	const products = (await getCollection('products')).filter((product) => !product.data.draft);
@@ -60,7 +60,8 @@ const resources = [
 			]
 		: []),
 ];
-const productMessage = `Hola, quiero recibir información sobre ${product.data.name}.`;
+const productMessage = product.data.advisorMessage ?? whatsAppMessages.product(product.data.name);
+const productButtonLabel = product.data.advisorButtonLabel ?? 'Consultar por WhatsApp';
 ---
 
 <BaseLayout title={title} description={description}>
@@ -185,6 +186,7 @@ const productMessage = `Hola, quiero recibir información sobre ${product.data.n
 							<p>{siteConfig.availabilityText}</p>
 						</div>
 					)}
+					{product.data.advisorText && <p class="advisor-text">{product.data.advisorText}</p>}
 					<dl class="meta-list">
 						<div>
 							<dt>Marca</dt>
@@ -204,7 +206,7 @@ const productMessage = `Hola, quiero recibir información sobre ${product.data.n
 						)}
 					</dl>
 					<div class="side-actions">
-						<a class="button" href={getWhatsAppUrl(productMessage)}>Consultar por WhatsApp</a>
+						<a class="button" href={getWhatsAppUrl(productMessage)}>{productButtonLabel}</a>
 						<a class="button button--secondary" href={`mailto:${siteConfig.email}`}>Enviar correo</a>
 					</div>
 				</div>
@@ -549,6 +551,12 @@ const productMessage = `Hola, quiero recibir información sobre ${product.data.n
 		color: var(--color-muted);
 		font-size: 0.95rem;
 		margin: 0;
+	}
+
+	.advisor-text {
+		margin: 0 0 16px;
+		color: var(--color-muted);
+		font-size: 0.95rem;
 	}
 
 	.side-actions .button {

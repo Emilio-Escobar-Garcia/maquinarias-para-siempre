@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import OtherReferenceCTA from '../../components/OtherReferenceCTA.astro';
-import { getWhatsAppUrl, sortProductsByCommercialPriority } from '../../site.config';
+import { getWhatsAppUrl, sortProductsByCommercialPriority, whatsAppMessages } from '../../site.config';
 
 export async function getStaticPaths() {
 	const categories = (await getCollection('categories')).filter((category) => !category.data.draft);
@@ -21,7 +21,7 @@ const products = sortProductsByCommercialPriority(
 );
 const title = category.data.seoTitle ?? `${category.data.name} | Maquinarias para Siempre`;
 const description = category.data.seoDescription ?? category.data.shortDescription;
-const advisorMessage = `Hola, quiero consultar una referencia o configuración de ${category.data.name}.`;
+const advisorMessage = whatsAppMessages.category(category.data.name);
 ---
 
 <BaseLayout title={title} description={description}>

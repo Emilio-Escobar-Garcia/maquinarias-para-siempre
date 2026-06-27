@@ -2,13 +2,15 @@
 interface Props {
 	title: string;
 	description: string;
+	indexable?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, indexable = true } = Astro.props;
 ---
 
 <title>{title}</title>
 <meta name="description" content={description} />
+{!indexable && <meta name="robots" content="noindex, nofollow" />}
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:type" content="website" />

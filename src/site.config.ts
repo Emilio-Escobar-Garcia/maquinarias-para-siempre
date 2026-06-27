@@ -7,9 +7,10 @@ export const siteConfig = {
 	coverage: 'Colombia',
 	phone: '+57 316 495 5256',
 	email: 'maquinariaspasiempre@gmail.com',
+	logo: '/images/brand/maquinarias-para-siempre-logo-original.jpeg',
 	instagramHandle: '@maquinarias_para_siempre_sas',
 	instagramUrl: 'https://www.instagram.com/maquinarias_para_siempre_sas/',
-	businessHours: 'lunes a viernes, de 8:00 a. m. a 6:00 p. m.',
+	contactAvailability: 'Recibimos consultas comerciales por WhatsApp y correo.',
 	krpanRelationship: 'representante y distribuidor oficial y exclusivo de Krpan en Colombia',
 	representedBrandRelationship: 'marca representada por Maquinarias para Siempre en Colombia',
 	companyIntro:
@@ -28,7 +29,7 @@ export const siteConfig = {
 	sparePartsMessage:
 		'Hola, quiero consultar disponibilidad de repuestos para un equipo Krpan.',
 	defaultWhatsAppMessage:
-		'Hola, quiero recibir información sobre maquinaria forestal de Maquinarias para Siempre.',
+		'Hola, quiero consultar maquinaria forestal con Maquinarias para Siempre.',
 	provisionalNotice:
 		'Contenido provisional. No corresponde a una ficha comercial publicada.',
 } as const;
@@ -37,6 +38,12 @@ export function getWhatsAppUrl(message = siteConfig.defaultWhatsAppMessage) {
 	const digits = siteConfig.phone.replace(/\D/g, '');
 	return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
+
+export const whatsAppMessages = {
+	product: (name: string) => `Hola, quiero consultar disponibilidad y configuración del ${name}.`,
+	brand: (name: string) => `Hola, quiero consultar productos de ${name}.`,
+	category: (name: string) => `Hola, quiero consultar equipos de ${name}.`,
+} as const;
 
 export const commercialSolutions = [
 	{

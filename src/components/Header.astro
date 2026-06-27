@@ -14,8 +14,7 @@ const navItems = [
 <header class="site-header">
 	<div class="container header-inner">
 		<a class="brand" href="/" aria-label={`Inicio de ${siteConfig.name}`}>
-			<span class="brand-mark" aria-hidden="true">MPS</span>
-			<span>{siteConfig.name}</span>
+			{siteConfig.legalName}
 		</a>
 		<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
 			<span class="menu-toggle-lines" aria-hidden="true"></span>
@@ -62,26 +61,11 @@ const navItems = [
 	.brand {
 		display: inline-flex;
 		align-items: center;
-		gap: 10px;
 		color: var(--color-primary);
 		font-size: 1rem;
 		font-weight: 800;
-		letter-spacing: 0;
+		line-height: 1.2;
 		text-decoration: none;
-	}
-
-	.brand-mark {
-		display: grid;
-		place-items: center;
-		width: 42px;
-		height: 42px;
-		border-radius: 10px;
-		background:
-			linear-gradient(135deg, var(--color-primary), #1e6092),
-			var(--color-primary);
-		color: #ffffff;
-		font-size: 0.78rem;
-		letter-spacing: 0.05em;
 	}
 
 	.menu-toggle {
@@ -175,6 +159,11 @@ const navItems = [
 
 		.menu-toggle {
 			display: inline-flex;
+		}
+
+		.brand {
+			max-width: 210px;
+			font-size: 0.92rem;
 		}
 
 		nav {

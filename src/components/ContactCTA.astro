@@ -1,12 +1,12 @@
 ---
-import { getWhatsAppUrl, siteConfig } from '../site.config';
+import { getWhatsAppUrl, siteConfig, whatsAppMessages } from '../site.config';
 
 interface Props {
 	productName?: string;
 }
 
 const message = Astro.props.productName
-	? `Hola, quiero recibir información sobre ${Astro.props.productName}.`
+	? whatsAppMessages.product(Astro.props.productName)
 	: siteConfig.defaultWhatsAppMessage;
 ---
 
